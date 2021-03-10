@@ -94,8 +94,6 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">core</span>::{
     <span class="ident">future</span>::<span class="ident">Future</span>,
@@ -108,10 +106,8 @@
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Transform</span>;
 
-<span class="doccomment">/// Transform for the `map_init_err` combinator, changing the type of a new</span>
-<span class="doccomment">/// transform&#39;s init error.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is created by the `Transform::map_init_err` method.</span>
+<span class="doccomment">/// Transform for the [`TransformExt::map_init_err`] combinator, changing the type of a new</span>
+<span class="doccomment">/// [`Transform`]&#39;s initialization error.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransformMapInitErr</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="ident">Req</span>, <span class="ident">F</span>, <span class="ident">E</span><span class="op">&gt;</span> {
     <span class="ident">transform</span>: <span class="ident">T</span>,
     <span class="ident">mapper</span>: <span class="ident">F</span>,

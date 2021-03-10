@@ -393,8 +393,6 @@
 <span id="392">392</span>
 <span id="393">393</span>
 <span id="394">394</span>
-<span id="395">395</span>
-<span id="396">396</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">future</span>::<span class="ident">Future</span>, <span class="ident">marker</span>::<span class="ident">PhantomData</span>};
 
@@ -413,8 +411,7 @@
 
 <span class="doccomment">/// Create `ServiceFactory` for function that can produce services</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use std::io;</span>
 <span class="doccomment">/// use actix_service::{fn_factory, fn_service, Service, ServiceFactory};</span>
@@ -460,11 +457,10 @@
 
 <span class="doccomment">/// Create `ServiceFactory` for function that accepts config argument and can produce services</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Any function that has following form `Fn(Config) -&gt; Future&lt;Output = Service&gt;` could</span>
-<span class="doccomment">/// act as a `ServiceFactory`.</span>
+<span class="doccomment">/// Any function that has following form `Fn(Config) -&gt; Future&lt;Output = Service&gt;` could act as</span>
+<span class="doccomment">/// a `ServiceFactory`.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use std::io;</span>
 <span class="doccomment">/// use actix_service::{fn_factory_with_config, fn_service, Service, ServiceFactory};</span>

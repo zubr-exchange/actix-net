@@ -315,18 +315,6 @@
 <span id="314">314</span>
 <span id="315">315</span>
 <span id="316">316</span>
-<span id="317">317</span>
-<span id="318">318</span>
-<span id="319">319</span>
-<span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
-<span id="328">328</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! See [`Service`] docs for information on this crate&#39;s foundational trait.</span>
 
@@ -364,11 +352,11 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">apply</span>::{<span class="ident">apply_fn</span>, <span class="ident">apply_fn_factory</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">apply_cfg</span>::{<span class="ident">apply_cfg</span>, <span class="ident">apply_cfg_factory</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ext</span>::{<span class="ident">ServiceExt</span>, <span class="ident">ServiceFactoryExt</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ext</span>::{<span class="ident">ServiceExt</span>, <span class="ident">ServiceFactoryExt</span>, <span class="ident">TransformExt</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">fn_service</span>::{<span class="ident">fn_factory</span>, <span class="ident">fn_factory_with_config</span>, <span class="ident">fn_service</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">map_config</span>::{<span class="ident">map_config</span>, <span class="ident">unit_config</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pipeline</span>::{<span class="ident">pipeline</span>, <span class="ident">pipeline_factory</span>, <span class="ident">Pipeline</span>, <span class="ident">PipelineFactory</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">transform</span>::{<span class="ident">apply</span>, <span class="ident">Transform</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">transform</span>::{<span class="ident">apply</span>, <span class="ident">ApplyTransform</span>, <span class="ident">Transform</span>};
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ready</span>::{<span class="ident">err</span>, <span class="ident">ok</span>, <span class="ident">ready</span>, <span class="ident">Ready</span>};
@@ -550,6 +538,7 @@
     }
 }
 
+<span class="doccomment">/// This impl is deprecated since v2 because the `Service` trait now receives shared reference.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">Req</span><span class="op">&gt;</span> <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">S</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
@@ -642,19 +631,6 @@
     <span class="ident">S</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
 {
     <span class="ident">tp</span>.<span class="ident">into_service</span>()
-}
-
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dev</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">apply</span>::{<span class="ident">Apply</span>, <span class="ident">ApplyFactory</span>};
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">fn_service</span>::{
-        <span class="ident">FnService</span>, <span class="ident">FnServiceConfig</span>, <span class="ident">FnServiceFactory</span>, <span class="ident">FnServiceNoConfig</span>,
-    };
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">map</span>::{<span class="ident">Map</span>, <span class="ident">MapServiceFactory</span>};
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">map_config</span>::{<span class="ident">MapConfig</span>, <span class="ident">UnitConfig</span>};
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">map_err</span>::{<span class="ident">MapErr</span>, <span class="ident">MapErrServiceFactory</span>};
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">map_init_err</span>::<span class="ident">MapInitErr</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">transform</span>::<span class="ident">ApplyTransform</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">transform_err</span>::<span class="ident">TransformMapInitErr</span>;
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="actix_service" data-search-js="../../search-index.js"></div>
