@@ -486,28 +486,13 @@
 <span id="485">485</span>
 <span id="486">486</span>
 <span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future</span>::<span class="ident">Future</span>,
     <span class="ident">mem</span>,
     <span class="ident">pin</span>::<span class="ident">Pin</span>,
     <span class="ident">sync</span>::{
-        <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>},
+        <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
         <span class="ident">Arc</span>,
     },
     <span class="ident">task</span>::{<span class="ident">Context</span>, <span class="ident">Poll</span>},
@@ -545,27 +530,6 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Conn</span> {
     <span class="kw">pub</span> <span class="ident">io</span>: <span class="ident">MioStream</span>,
     <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">Token</span>,
-}
-
-<span class="kw">static</span> <span class="ident">MAX_CONNS</span>: <span class="ident">AtomicUsize</span> <span class="op">=</span> <span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="number">25600</span>);
-
-<span class="doccomment">/// Sets the maximum per-worker number of concurrent connections.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// All socket listeners will stop accepting connections when this limit is</span>
-<span class="doccomment">/// reached for each worker.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// By default max connections is set to a 25k per worker.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">max_concurrent_connections</span>(<span class="ident">num</span>: <span class="ident">usize</span>) {
-    <span class="ident">MAX_CONNS</span>.<span class="ident">store</span>(<span class="ident">num</span>, <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
-}
-
-<span class="macro">thread_local</span><span class="macro">!</span> {
-    <span class="kw">static</span> <span class="ident">MAX_CONNS_COUNTER</span>: <span class="ident">Counter</span> <span class="op">=</span>
-        <span class="ident">Counter</span>::<span class="ident">new</span>(<span class="ident">MAX_CONNS</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>));
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">num_connections</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="ident">MAX_CONNS_COUNTER</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">conns</span><span class="op">|</span> <span class="ident">conns</span>.<span class="ident">total</span>())
 }
 
 <span class="comment">// a handle to worker that can send message to worker and share the availability of worker to other</span>
@@ -677,6 +641,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">ServerWorkerConfig</span> {
     <span class="ident">shutdown_timeout</span>: <span class="ident">Duration</span>,
     <span class="ident">max_blocking_threads</span>: <span class="ident">usize</span>,
+    <span class="ident">max_concurrent_connections</span>: <span class="ident">usize</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ServerWorkerConfig</span> {
@@ -686,6 +651,7 @@
         <span class="self">Self</span> {
             <span class="ident">shutdown_timeout</span>: <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">30</span>),
             <span class="ident">max_blocking_threads</span>,
+            <span class="ident">max_concurrent_connections</span>: <span class="number">25600</span>,
         }
     }
 }
@@ -693,6 +659,10 @@
 <span class="kw">impl</span> <span class="ident">ServerWorkerConfig</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">max_blocking_threads</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">num</span>: <span class="ident">usize</span>) {
         <span class="self">self</span>.<span class="ident">max_blocking_threads</span> <span class="op">=</span> <span class="ident">num</span>;
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">max_concurrent_connections</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">num</span>: <span class="ident">usize</span>) {
+        <span class="self">self</span>.<span class="ident">max_concurrent_connections</span> <span class="op">=</span> <span class="ident">num</span>;
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">shutdown_timeout</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dur</span>: <span class="ident">Duration</span>) {
@@ -722,16 +692,16 @@
         })
         .<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> {
             <span class="ident">availability</span>.<span class="ident">set</span>(<span class="bool-val">false</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrk</span> <span class="op">=</span> <span class="ident">MAX_CONNS_COUNTER</span>.<span class="ident">with</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">conns</span><span class="op">|</span> <span class="ident">ServerWorker</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrk</span> <span class="op">=</span> <span class="ident">ServerWorker</span> {
                 <span class="ident">rx</span>,
                 <span class="ident">rx2</span>,
                 <span class="ident">services</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
                 <span class="ident">availability</span>,
+                <span class="ident">conns</span>: <span class="ident">Counter</span>::<span class="ident">new</span>(<span class="ident">config</span>.<span class="ident">max_concurrent_connections</span>),
                 <span class="ident">factories</span>,
                 <span class="ident">state</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="ident">shutdown_timeout</span>: <span class="ident">config</span>.<span class="ident">shutdown_timeout</span>,
-                <span class="ident">conns</span>: <span class="ident">conns</span>.<span class="ident">clone</span>(),
-            });
+            };
 
             <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">wrk</span>
                 .<span class="ident">factories</span>
@@ -887,7 +857,7 @@
             <span class="ident">Pin</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">rx2</span>).<span class="ident">poll_recv</span>(<span class="ident">cx</span>)
         {
             <span class="ident">this</span>.<span class="ident">availability</span>.<span class="ident">set</span>(<span class="bool-val">false</span>);
-            <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">num_connections</span>();
+            <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">conns</span>.<span class="ident">total</span>();
             <span class="kw">if</span> <span class="ident">num</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Shutting down worker, 0 connections&quot;</span>);
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">tx</span>.<span class="ident">send</span>(<span class="bool-val">true</span>);
@@ -954,7 +924,7 @@
                 <span class="comment">// Wait for 1 second.</span>
                 <span class="macro">ready</span><span class="macro">!</span>(<span class="ident">shutdown</span>.<span class="ident">timer</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>));
 
-                <span class="kw">if</span> <span class="ident">num_connections</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">conns</span>.<span class="ident">total</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                     <span class="comment">// Graceful shutdown.</span>
                     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">WorkerState</span>::<span class="ident">Shutdown</span>(<span class="ident">shutdown</span>) <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">state</span>) {
                         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">shutdown</span>.<span class="ident">tx</span>.<span class="ident">send</span>(<span class="bool-val">true</span>);

@@ -523,7 +523,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">socket</span>::{<span class="ident">MioListener</span>, <span class="ident">StdSocketAddr</span>, <span class="ident">StdTcpListener</span>, <span class="ident">ToSocketAddrs</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">socket</span>::{<span class="ident">MioTcpListener</span>, <span class="ident">MioTcpSocket</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">waker_queue</span>::{<span class="ident">WakerInterest</span>, <span class="ident">WakerQueue</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">worker</span>::{<span class="self">self</span>, <span class="ident">ServerWorker</span>, <span class="ident">ServerWorkerConfig</span>, <span class="ident">WorkerAvailability</span>, <span class="ident">WorkerHandle</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">worker</span>::{<span class="ident">ServerWorker</span>, <span class="ident">ServerWorkerConfig</span>, <span class="ident">WorkerAvailability</span>, <span class="ident">WorkerHandle</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">join_all</span>, <span class="ident">Token</span>};
 
 <span class="doccomment">/// Server builder</span>
@@ -621,8 +621,8 @@
     <span class="doccomment">/// reached for each worker.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// By default max connections is set to a 25k per worker.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">maxconn</span>(<span class="self">self</span>, <span class="ident">num</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">worker</span>::<span class="ident">max_concurrent_connections</span>(<span class="ident">num</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">maxconn</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">num</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">worker_config</span>.<span class="ident">max_concurrent_connections</span>(<span class="ident">num</span>);
         <span class="self">self</span>
     }
 
