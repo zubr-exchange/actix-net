@@ -470,8 +470,6 @@
 <span id="469">469</span>
 <span id="470">470</span>
 <span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">future</span>::<span class="ident">Future</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">pin</span>::<span class="ident">Pin</span>;
@@ -936,9 +934,7 @@
                     <span class="comment">// handle incoming io stream</span>
                     <span class="prelude-val">Some</span>(<span class="ident">WorkerCommand</span>(<span class="ident">msg</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">conns</span>.<span class="ident">get</span>();
-                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">services</span>[<span class="ident">msg</span>.<span class="ident">token</span>.<span class="number">0</span>]
-                            .<span class="ident">service</span>
-                            .<span class="ident">call</span>((<span class="prelude-val">Some</span>(<span class="ident">guard</span>), <span class="ident">msg</span>.<span class="ident">io</span>));
+                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">services</span>[<span class="ident">msg</span>.<span class="ident">token</span>.<span class="number">0</span>].<span class="ident">service</span>.<span class="ident">call</span>((<span class="ident">guard</span>, <span class="ident">msg</span>.<span class="ident">io</span>));
                     }
                     <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="ident">Poll</span>::<span class="ident">Ready</span>(()),
                 };
