@@ -725,7 +725,7 @@
                     <span class="prelude-val">Ok</span>(<span class="ident">services</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">services</span> {
                             <span class="kw">for</span> (<span class="ident">factory</span>, <span class="ident">token</span>, <span class="ident">service</span>) <span class="kw">in</span> <span class="ident">item</span> {
-                                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">token</span>.<span class="number">0</span>, <span class="ident">wrk</span>.<span class="ident">services</span>.<span class="ident">len</span>());
+                                <span class="macro">assert_eq!</span>(<span class="ident">token</span>.<span class="number">0</span>, <span class="ident">wrk</span>.<span class="ident">services</span>.<span class="ident">len</span>());
                                 <span class="ident">wrk</span>.<span class="ident">services</span>.<span class="ident">push</span>(<span class="ident">WorkerService</span> {
                                     <span class="ident">factory</span>,
                                     <span class="ident">service</span>,
@@ -735,7 +735,7 @@
                         }
                     }
                     <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Can not start worker: {:?}&quot;</span>, <span class="ident">e</span>);
+                        <span class="macro">error!</span>(<span class="string">&quot;Can not start worker: {:?}&quot;</span>, <span class="ident">e</span>);
                         <span class="ident">Arbiter</span>::<span class="ident">current</span>().<span class="ident">stop</span>();
                     }
                 }
@@ -748,7 +748,7 @@
 
     <span class="kw">fn</span> <span class="ident">restart_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">token</span>: <span class="ident">Token</span>, <span class="ident">factory_id</span>: <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">factory</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">factories</span>[<span class="ident">factory_id</span>];
-        <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Service {:?} failed, restarting&quot;</span>, <span class="ident">factory</span>.<span class="ident">name</span>(<span class="ident">token</span>));
+        <span class="macro">trace!</span>(<span class="string">&quot;Service {:?} failed, restarting&quot;</span>, <span class="ident">factory</span>.<span class="ident">name</span>(<span class="ident">token</span>));
         <span class="self">self</span>.<span class="ident">services</span>[<span class="ident">token</span>.<span class="number">0</span>].<span class="ident">status</span> <span class="op">=</span> <span class="ident">WorkerServiceStatus</span>::<span class="ident">Restarting</span>;
         <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">WorkerState</span>::<span class="ident">Restarting</span>(<span class="ident">Restart</span> {
             <span class="ident">factory_id</span>,
@@ -780,7 +780,7 @@
                 <span class="kw">match</span> <span class="ident">srv</span>.<span class="ident">service</span>.<span class="ident">poll_ready</span>(<span class="ident">cx</span>) {
                     <span class="ident">Poll</span>::<span class="ident">Ready</span>(<span class="prelude-val">Ok</span>(<span class="kw">_</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">if</span> <span class="ident">srv</span>.<span class="ident">status</span> <span class="op">=</span><span class="op">=</span> <span class="ident">WorkerServiceStatus</span>::<span class="ident">Unavailable</span> {
-                            <span class="macro">trace</span><span class="macro">!</span>(
+                            <span class="macro">trace!</span>(
                                 <span class="string">&quot;Service {:?} is available&quot;</span>,
                                 <span class="self">self</span>.<span class="ident">factories</span>[<span class="ident">srv</span>.<span class="ident">factory</span>].<span class="ident">name</span>(<span class="ident">Token</span>(<span class="ident">idx</span>))
                             );
@@ -791,7 +791,7 @@
                         <span class="ident">ready</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
                         <span class="kw">if</span> <span class="ident">srv</span>.<span class="ident">status</span> <span class="op">=</span><span class="op">=</span> <span class="ident">WorkerServiceStatus</span>::<span class="ident">Available</span> {
-                            <span class="macro">trace</span><span class="macro">!</span>(
+                            <span class="macro">trace!</span>(
                                 <span class="string">&quot;Service {:?} is unavailable&quot;</span>,
                                 <span class="self">self</span>.<span class="ident">factories</span>[<span class="ident">srv</span>.<span class="ident">factory</span>].<span class="ident">name</span>(<span class="ident">Token</span>(<span class="ident">idx</span>))
                             );
@@ -799,7 +799,7 @@
                         }
                     }
                     <span class="ident">Poll</span>::<span class="ident">Ready</span>(<span class="prelude-val">Err</span>(<span class="kw">_</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="macro">error</span><span class="macro">!</span>(
+                        <span class="macro">error!</span>(
                             <span class="string">&quot;Service {:?} readiness check returned error, restarting&quot;</span>,
                             <span class="self">self</span>.<span class="ident">factories</span>[<span class="ident">srv</span>.<span class="ident">factory</span>].<span class="ident">name</span>(<span class="ident">Token</span>(<span class="ident">idx</span>))
                         );
@@ -859,11 +859,11 @@
             <span class="ident">this</span>.<span class="ident">availability</span>.<span class="ident">set</span>(<span class="bool-val">false</span>);
             <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">conns</span>.<span class="ident">total</span>();
             <span class="kw">if</span> <span class="ident">num</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Shutting down worker, 0 connections&quot;</span>);
+                <span class="macro">info!</span>(<span class="string">&quot;Shutting down worker, 0 connections&quot;</span>);
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">tx</span>.<span class="ident">send</span>(<span class="bool-val">true</span>);
                 <span class="kw">return</span> <span class="ident">Poll</span>::<span class="ident">Ready</span>(());
             } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">graceful</span> {
-                <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Graceful worker shutdown, {} connections&quot;</span>, <span class="ident">num</span>);
+                <span class="macro">info!</span>(<span class="string">&quot;Graceful worker shutdown, {} connections&quot;</span>, <span class="ident">num</span>);
                 <span class="ident">this</span>.<span class="ident">shutdown</span>(<span class="bool-val">false</span>);
 
                 <span class="ident">this</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">WorkerState</span>::<span class="ident">Shutdown</span>(<span class="ident">Shutdown</span> {
@@ -872,7 +872,7 @@
                     <span class="ident">tx</span>,
                 });
             } <span class="kw">else</span> {
-                <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Force shutdown worker, {} connections&quot;</span>, <span class="ident">num</span>);
+                <span class="macro">info!</span>(<span class="string">&quot;Force shutdown worker, {} connections&quot;</span>, <span class="ident">num</span>);
                 <span class="ident">this</span>.<span class="ident">shutdown</span>(<span class="bool-val">true</span>);
 
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">tx</span>.<span class="ident">send</span>(<span class="bool-val">false</span>);
@@ -897,8 +897,8 @@
                 <span class="kw">let</span> <span class="ident">factory_id</span> <span class="op">=</span> <span class="ident">restart</span>.<span class="ident">factory_id</span>;
                 <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">restart</span>.<span class="ident">token</span>;
 
-                <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="macro">ready</span><span class="macro">!</span>(<span class="ident">restart</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>)).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                    <span class="macro">panic</span><span class="macro">!</span>(
+                <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="macro">ready!</span>(<span class="ident">restart</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>)).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                    <span class="macro">panic!</span>(
                         <span class="string">&quot;Can not restart {:?} service&quot;</span>,
                         <span class="ident">this</span>.<span class="ident">factories</span>[<span class="ident">factory_id</span>].<span class="ident">name</span>(<span class="ident">token</span>)
                     )
@@ -910,7 +910,7 @@
                     .<span class="ident">next</span>()
                     .<span class="ident">expect</span>(<span class="string">&quot;No BoxedServerService. Restarting can not progress&quot;</span>);
 
-                <span class="macro">trace</span><span class="macro">!</span>(
+                <span class="macro">trace!</span>(
                     <span class="string">&quot;Service {:?} has been restarted&quot;</span>,
                     <span class="ident">this</span>.<span class="ident">factories</span>[<span class="ident">factory_id</span>].<span class="ident">name</span>(<span class="ident">token</span>)
                 );
@@ -922,7 +922,7 @@
             }
             <span class="ident">WorkerState</span>::<span class="ident">Shutdown</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">shutdown</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="comment">// Wait for 1 second.</span>
-                <span class="macro">ready</span><span class="macro">!</span>(<span class="ident">shutdown</span>.<span class="ident">timer</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>));
+                <span class="macro">ready!</span>(<span class="ident">shutdown</span>.<span class="ident">timer</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>));
 
                 <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">conns</span>.<span class="ident">total</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                     <span class="comment">// Graceful shutdown.</span>
@@ -950,7 +950,7 @@
                 <span class="kw">match</span> <span class="ident">this</span>.<span class="ident">check_readiness</span>(<span class="ident">cx</span>) {
                     <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>) <span class="op">=</span><span class="op">&gt;</span> {}
                     <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Worker is unavailable&quot;</span>);
+                        <span class="macro">trace!</span>(<span class="string">&quot;Worker is unavailable&quot;</span>);
                         <span class="ident">this</span>.<span class="ident">availability</span>.<span class="ident">set</span>(<span class="bool-val">false</span>);
                         <span class="ident">this</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">WorkerState</span>::<span class="ident">Unavailable</span>;
                         <span class="kw">return</span> <span class="self">self</span>.<span class="ident">poll</span>(<span class="ident">cx</span>);
@@ -962,7 +962,7 @@
                     }
                 }
 
-                <span class="kw">match</span> <span class="macro">ready</span><span class="macro">!</span>(<span class="ident">Pin</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">rx</span>).<span class="ident">poll_recv</span>(<span class="ident">cx</span>)) {
+                <span class="kw">match</span> <span class="macro">ready!</span>(<span class="ident">Pin</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">rx</span>).<span class="ident">poll_recv</span>(<span class="ident">cx</span>)) {
                     <span class="comment">// handle incoming io stream</span>
                     <span class="prelude-val">Some</span>(<span class="ident">WorkerCommand</span>(<span class="ident">msg</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">conns</span>.<span class="ident">get</span>();
