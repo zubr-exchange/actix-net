@@ -270,7 +270,6 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
-<span id="272">272</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">alloc</span>::{<span class="ident">rc::Rc</span>, <span class="ident">sync::Arc</span>};
 <span class="kw">use</span> <span class="ident">core</span>::{
@@ -496,10 +495,9 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">core</span>::{
-        <span class="ident">future</span>::{<span class="ident">ready</span>, <span class="ident">Ready</span>},
-        <span class="ident">time::Duration</span>,
-    };
+    <span class="kw">use</span> <span class="ident">core::time::Duration</span>;
+
+    <span class="kw">use</span> <span class="ident">actix_utils::future</span>::{<span class="ident">ready</span>, <span class="ident">Ready</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::Service</span>;
