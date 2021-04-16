@@ -576,7 +576,6 @@
 <span id="575">575</span>
 <span id="576">576</span>
 <span id="577">577</span>
-<span id="578">578</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std::time::Duration</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">io</span>, <span class="ident">thread</span>};
@@ -818,11 +817,10 @@
                         <span class="kw">match</span> <span class="ident">guard</span>.<span class="ident">pop_front</span>() {
                             <span class="comment">// worker notify it becomes available. we may want to recover</span>
                             <span class="comment">// from backpressure.</span>
-                            <span class="prelude-val">Some</span>(<span class="ident">WakerInterest::WorkerAvailable</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="prelude-val">Some</span>(<span class="ident">WakerInterest::WorkerAvailable</span>(<span class="ident">idx</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="ident">drop</span>(<span class="ident">guard</span>);
-                                <span class="comment">// Assume all worker are avail as no worker index returned.</span>
-                                <span class="self">self</span>.<span class="ident">avail</span>.<span class="ident">set_available_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">handles</span>);
                                 <span class="self">self</span>.<span class="ident">maybe_backpressure</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sockets</span>, <span class="bool-val">false</span>);
+                                <span class="self">self</span>.<span class="ident">avail</span>.<span class="ident">set_available</span>(<span class="ident">idx</span>, <span class="bool-val">true</span>);
                             }
                             <span class="comment">// a new worker thread is made and it&#39;s handle would be added to Accept</span>
                             <span class="prelude-val">Some</span>(<span class="ident">WakerInterest::Worker</span>(<span class="ident">handle</span>)) <span class="op">=</span><span class="op">&gt;</span> {

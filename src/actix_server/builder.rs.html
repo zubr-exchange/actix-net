@@ -817,7 +817,7 @@
         <span class="ident">idx</span>: <span class="ident">usize</span>,
         <span class="ident">waker</span>: <span class="ident">WakerQueue</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">WorkerHandleAccept</span>, <span class="ident">WorkerHandleServer</span>) {
-        <span class="kw">let</span> <span class="ident">avail</span> <span class="op">=</span> <span class="ident">WorkerAvailability::new</span>(<span class="ident">waker</span>);
+        <span class="kw">let</span> <span class="ident">avail</span> <span class="op">=</span> <span class="ident">WorkerAvailability::new</span>(<span class="ident">idx</span>, <span class="ident">waker</span>);
         <span class="kw">let</span> <span class="ident">services</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">services</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">clone_factory</span>()).<span class="ident">collect</span>();
 
         <span class="ident">ServerWorker::start</span>(<span class="ident">idx</span>, <span class="ident">services</span>, <span class="ident">avail</span>, <span class="self">self</span>.<span class="ident">worker_config</span>)
