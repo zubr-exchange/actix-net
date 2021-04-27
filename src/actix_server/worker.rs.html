@@ -508,15 +508,6 @@
 <span id="507">507</span>
 <span id="508">508</span>
 <span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
@@ -751,11 +742,7 @@
                 .<span class="ident">enumerate</span>()
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">idx</span>, <span class="ident">factory</span>)<span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">factory</span>.<span class="ident">create</span>();
-                    <span class="kw">async</span> <span class="kw">move</span> {
-                        <span class="ident">fut</span>.<span class="kw">await</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                            <span class="ident">r</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">t</span>, <span class="ident">s</span>)<span class="op">|</span> (<span class="ident">idx</span>, <span class="ident">t</span>, <span class="ident">s</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                        })
-                    }
+                    <span class="kw">async</span> <span class="kw">move</span> { <span class="ident">fut</span>.<span class="kw">await</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">t</span>, <span class="ident">s</span>)<span class="op">|</span> (<span class="ident">idx</span>, <span class="ident">t</span>, <span class="ident">s</span>)) }
                 })
                 .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
@@ -768,7 +755,6 @@
                 <span class="kw">let</span> <span class="ident">services</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">res</span> {
                     <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">res</span>
                         .<span class="ident">into_iter</span>()
-                        .<span class="ident">flatten</span>()
                         .<span class="ident">fold</span>(<span class="ident">Vec::new</span>(), <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">services</span>, (<span class="ident">factory</span>, <span class="ident">token</span>, <span class="ident">service</span>)<span class="op">|</span> {
                             <span class="macro">assert_eq!</span>(<span class="ident">token</span>.<span class="number">0</span>, <span class="ident">services</span>.<span class="ident">len</span>());
                             <span class="ident">services</span>.<span class="ident">push</span>(<span class="ident">WorkerService</span> {
@@ -880,7 +866,7 @@
 <span class="kw">struct</span> <span class="ident">Restart</span> {
     <span class="ident">factory_id</span>: <span class="ident">usize</span>,
     <span class="ident">token</span>: <span class="ident">Token</span>,
-    <span class="ident">fut</span>: <span class="ident">LocalBoxFuture</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Token</span>, <span class="ident">BoxedServerService</span>)<span class="op">&gt;</span>, ()<span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">fut</span>: <span class="ident">LocalBoxFuture</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Token</span>, <span class="ident">BoxedServerService</span>), ()<span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="comment">// Shutdown keep states necessary for server shutdown:</span>
@@ -960,19 +946,15 @@
                 <span class="kw">let</span> <span class="ident">factory_id</span> <span class="op">=</span> <span class="ident">restart</span>.<span class="ident">factory_id</span>;
                 <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">restart</span>.<span class="ident">token</span>;
 
-                <span class="kw">let</span> <span class="ident">service</span> <span class="op">=</span> <span class="macro">ready!</span>(<span class="ident">restart</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>))
+                <span class="kw">let</span> (<span class="ident">token_new</span>, <span class="ident">service</span>) <span class="op">=</span> <span class="macro">ready!</span>(<span class="ident">restart</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>))
                     .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
                         <span class="macro">panic!</span>(
                             <span class="string">&quot;Can not restart {:?} service&quot;</span>,
                             <span class="ident">this</span>.<span class="ident">factories</span>[<span class="ident">factory_id</span>].<span class="ident">name</span>(<span class="ident">token</span>)
                         )
-                    })
-                    .<span class="ident">into_iter</span>()
-                    <span class="comment">// Find the same token from vector. There should be only one</span>
-                    <span class="comment">// So the first match would be enough.</span>
-                    .<span class="ident">find</span>(<span class="op">|</span>(<span class="ident">t</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">t</span> <span class="op">=</span><span class="op">=</span> <span class="ident">token</span>)
-                    .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">service</span>)<span class="op">|</span> <span class="ident">service</span>)
-                    .<span class="ident">expect</span>(<span class="string">&quot;No BoxedServerService found&quot;</span>);
+                    });
+
+                <span class="macro">assert_eq!</span>(<span class="ident">token</span>, <span class="ident">token_new</span>);
 
                 <span class="macro">trace!</span>(
                     <span class="string">&quot;Service {:?} has been restarted&quot;</span>,

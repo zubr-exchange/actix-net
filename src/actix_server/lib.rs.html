@@ -124,8 +124,6 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! General purpose TCP server.</span>
 
@@ -135,7 +133,6 @@
 
 <span class="kw">mod</span> <span class="ident">accept</span>;
 <span class="kw">mod</span> <span class="ident">builder</span>;
-<span class="kw">mod</span> <span class="ident">config</span>;
 <span class="kw">mod</span> <span class="ident">server</span>;
 <span class="kw">mod</span> <span class="ident">service</span>;
 <span class="kw">mod</span> <span class="ident">signals</span>;
@@ -145,7 +142,6 @@
 <span class="kw">mod</span> <span class="ident">worker</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::builder::ServerBuilder</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::config</span>::{<span class="ident">ServiceConfig</span>, <span class="ident">ServiceRuntime</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::server::Server</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::service::ServiceFactory</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::test_server::TestServer</span>;
