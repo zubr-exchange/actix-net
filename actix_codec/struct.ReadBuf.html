@@ -5,10 +5,9 @@ filled with data, a region that has been initialized at some point but not
 yet logically filled, and a region at the end that may be uninitialized.
 The filled region is guaranteed to be a subset of the initialized region.</p>
 <p>In summary, the contents of the buffer can be visualized as:</p>
-<pre><code class="language-not_rust">[             capacity              ]
+<div class="example-wrap"><pre class="language-not_rust">[             capacity              ]
 [ filled |         unfilled         ]
-[    initialized    | uninitialized ]
-</code></pre>
+[    initialized    | uninitialized ]</pre></div>
 <p>It is undefined behavior to de-initialize any bytes from the uninitialized
 region, since it is merely unknown whether this region is uninitialized or
 not, and if part of it turns out to be initialized, it must stay initialized.</p>
