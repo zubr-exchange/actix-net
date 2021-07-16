@@ -559,6 +559,7 @@
 <span id="559">559</span>
 <span id="560">560</span>
 <span id="561">561</span>
+<span id="562">562</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
@@ -635,7 +636,7 @@
 <span class="doccomment">/// On reaching counter limit worker would use `mio::Waker` and `WakerQueue` to wake up `Accept`</span>
 <span class="doccomment">/// and notify it to update cached `Availability` again to mark worker as able to accept work again.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Hense a wake up would only happen after `Accept` increment it to limit.</span>
+<span class="doccomment">/// Hence, a wake up would only happen after `Accept` increment it to limit.</span>
 <span class="doccomment">/// And a decrement to limit always wake up `Accept`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Counter</span> {
@@ -741,8 +742,9 @@
 <span class="doccomment">/// Handle to worker than can send stop message to worker.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Held by [ServerBuilder](crate::builder::ServerBuilder).</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">WorkerHandleServer</span> {
-    <span class="kw">pub</span> <span class="ident">idx</span>: <span class="ident">usize</span>,
+    <span class="ident">idx</span>: <span class="ident">usize</span>,
     <span class="ident">tx</span>: <span class="ident">UnboundedSender</span><span class="op">&lt;</span><span class="ident">Stop</span><span class="op">&gt;</span>,
 }
 
