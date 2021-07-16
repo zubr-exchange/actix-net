@@ -818,79 +818,11 @@
 <span id="818">818</span>
 <span id="819">819</span>
 <span id="820">820</span>
-<span id="821">821</span>
-<span id="822">822</span>
-<span id="823">823</span>
-<span id="824">824</span>
-<span id="825">825</span>
-<span id="826">826</span>
-<span id="827">827</span>
-<span id="828">828</span>
-<span id="829">829</span>
-<span id="830">830</span>
-<span id="831">831</span>
-<span id="832">832</span>
-<span id="833">833</span>
-<span id="834">834</span>
-<span id="835">835</span>
-<span id="836">836</span>
-<span id="837">837</span>
-<span id="838">838</span>
-<span id="839">839</span>
-<span id="840">840</span>
-<span id="841">841</span>
-<span id="842">842</span>
-<span id="843">843</span>
-<span id="844">844</span>
-<span id="845">845</span>
-<span id="846">846</span>
-<span id="847">847</span>
-<span id="848">848</span>
-<span id="849">849</span>
-<span id="850">850</span>
-<span id="851">851</span>
-<span id="852">852</span>
-<span id="853">853</span>
-<span id="854">854</span>
-<span id="855">855</span>
-<span id="856">856</span>
-<span id="857">857</span>
-<span id="858">858</span>
-<span id="859">859</span>
-<span id="860">860</span>
-<span id="861">861</span>
-<span id="862">862</span>
-<span id="863">863</span>
-<span id="864">864</span>
-<span id="865">865</span>
-<span id="866">866</span>
-<span id="867">867</span>
-<span id="868">868</span>
-<span id="869">869</span>
-<span id="870">870</span>
-<span id="871">871</span>
-<span id="872">872</span>
-<span id="873">873</span>
-<span id="874">874</span>
-<span id="875">875</span>
-<span id="876">876</span>
-<span id="877">877</span>
-<span id="878">878</span>
-<span id="879">879</span>
-<span id="880">880</span>
-<span id="881">881</span>
-<span id="882">882</span>
-<span id="883">883</span>
-<span id="884">884</span>
-<span id="885">885</span>
 </pre><pre class="rust">
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">borrow::Cow</span>,
-    <span class="ident">cmp::min</span>,
-    <span class="ident">collections::HashMap</span>,
-    <span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>},
-    <span class="ident">mem</span>,
-};
+<span class="kw">use</span> <span class="ident">std::cmp::min</span>;
+<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<span class="kw">use</span> <span class="ident">std::hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>};
+<span class="kw">use</span> <span class="ident">std::mem</span>;
 
 <span class="kw">use</span> <span class="ident">regex</span>::{<span class="ident">escape</span>, <span class="ident">Regex</span>, <span class="ident">RegexSet</span>};
 
@@ -904,49 +836,30 @@
 <span class="doccomment">/// See the docs under: https://docs.rs/regex/1.5.4/regex/#grouping-and-flags</span>
 <span class="kw">const</span> <span class="ident">REGEX_FLAGS</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;(?s-m)&quot;</span>;
 
-<span class="doccomment">/// Describes an entry in a resource table.</span>
+<span class="doccomment">/// ResourceDef describes an entry in resources table</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Resource definition can contain at most 16 dynamic segments.</span>
+<span class="doccomment">/// Resource definition can contain only 16 dynamic segments</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResourceDef</span> {
     <span class="ident">id</span>: <span class="ident">u16</span>,
-
-    <span class="doccomment">/// Stores</span>
-    <span class="ident">pat_type</span>: <span class="ident">PatternType</span>,
-
-    <span class="doccomment">/// Optional name of resource definition.</span>
+    <span class="ident">tp</span>: <span class="ident">PatternType</span>,
     <span class="ident">name</span>: <span class="ident">String</span>,
-
-    <span class="doccomment">/// Pattern that generated the resource definition.</span>
-    <span class="comment">// TODO: Sort of, in dynamic set pattern type it is blank, consider change.</span>
     <span class="ident">pattern</span>: <span class="ident">String</span>,
-
-    <span class="doccomment">///</span>
     <span class="ident">elements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PatternElement</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">enum</span> <span class="ident">PatternElement</span> {
-    <span class="doccomment">/// Literal slice of pattern.</span>
     <span class="ident">Const</span>(<span class="ident">String</span>),
-
-    <span class="doccomment">/// Name of dynamic segment.</span>
     <span class="ident">Var</span>(<span class="ident">String</span>),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::large_enum_variant</span>)]</span>
 <span class="kw">enum</span> <span class="ident">PatternType</span> {
-    <span class="doccomment">/// Single constant/literal segment.</span>
     <span class="ident">Static</span>(<span class="ident">String</span>),
-
-    <span class="doccomment">/// Single constant/literal prefix segment.</span>
     <span class="ident">Prefix</span>(<span class="ident">String</span>),
-
-    <span class="doccomment">/// Single regular expression and list of dynamic segment names.</span>
     <span class="ident">Dynamic</span>(<span class="ident">Regex</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>),
-
-    <span class="doccomment">/// Regular expression set and list of component expressions plus dynamic segment names.</span>
     <span class="ident">DynamicSet</span>(<span class="ident">RegexSet</span>, <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Regex</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>)<span class="op">&gt;</span>),
 }
 
@@ -973,7 +886,7 @@
 
             <span class="ident">ResourceDef</span> {
                 <span class="ident">id</span>: <span class="number">0</span>,
-                <span class="ident">pat_type</span>: <span class="ident">PatternType::DynamicSet</span>(<span class="ident">RegexSet::new</span>(<span class="ident">re_set</span>).<span class="ident">unwrap</span>(), <span class="ident">data</span>),
+                <span class="ident">tp</span>: <span class="ident">PatternType::DynamicSet</span>(<span class="ident">RegexSet::new</span>(<span class="ident">re_set</span>).<span class="ident">unwrap</span>(), <span class="ident">data</span>),
                 <span class="ident">elements</span>: <span class="prelude-val">None</span>,
                 <span class="ident">name</span>: <span class="ident">String::new</span>(),
                 <span class="ident">pattern</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>(),
@@ -990,8 +903,9 @@
         <span class="ident">ResourceDef::from_single_pattern</span>(<span class="ident">path</span>, <span class="bool-val">true</span>)
     }
 
-    <span class="doccomment">/// Parse path pattern and create new `Pattern` instance, inserting a `/` to beginning of</span>
-    <span class="doccomment">/// the pattern if absent.</span>
+    <span class="doccomment">/// Parse path pattern and create new `Pattern` instance.</span>
+    <span class="doccomment">/// Inserts `/` to begging of the pattern.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Use `prefix` type instead of `static`.</span>
     <span class="doccomment">///</span>
@@ -1000,12 +914,12 @@
         <span class="ident">ResourceDef::from_single_pattern</span>(<span class="kw-2">&amp;</span><span class="ident">insert_slash</span>(<span class="ident">path</span>), <span class="bool-val">true</span>)
     }
 
-    <span class="doccomment">/// Resource ID.</span>
+    <span class="doccomment">/// Resource id</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u16</span> {
         <span class="self">self</span>.<span class="ident">id</span>
     }
 
-    <span class="doccomment">/// Set resource ID.</span>
+    <span class="doccomment">/// Set resource id</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_id</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u16</span>) {
         <span class="self">self</span>.<span class="ident">id</span> <span class="op">=</span> <span class="ident">id</span>;
     }
@@ -1013,10 +927,10 @@
     <span class="doccomment">/// Parse path pattern and create a new instance</span>
     <span class="kw">fn</span> <span class="ident">from_single_pattern</span>(<span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">for_prefix</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">pattern</span> <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">to_owned</span>();
-        <span class="kw">let</span> (<span class="ident">pat_type</span>, <span class="ident">elements</span>) <span class="op">=</span> <span class="ident">ResourceDef::parse</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="ident">for_prefix</span>, <span class="bool-val">false</span>);
+        <span class="kw">let</span> (<span class="ident">tp</span>, <span class="ident">elements</span>) <span class="op">=</span> <span class="ident">ResourceDef::parse</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="ident">for_prefix</span>, <span class="bool-val">false</span>);
 
         <span class="ident">ResourceDef</span> {
-            <span class="ident">pat_type</span>,
+            <span class="ident">tp</span>,
             <span class="ident">pattern</span>,
             <span class="ident">elements</span>: <span class="prelude-val">Some</span>(<span class="ident">elements</span>),
             <span class="ident">id</span>: <span class="number">0</span>,
@@ -1024,7 +938,7 @@
         }
     }
 
-    <span class="doccomment">/// Resource pattern name.</span>
+    <span class="doccomment">/// Resource pattern name</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>
     }
@@ -1042,7 +956,7 @@
     <span class="doccomment">/// Check if path matches this pattern.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat_type</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tp</span> {
             <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">s</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path</span>,
             <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="ident">s</span>),
             <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">re</span>.<span class="ident">is_match</span>(<span class="ident">path</span>),
@@ -1052,52 +966,34 @@
 
     <span class="doccomment">/// Is prefix path a match against this resource.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prefix_match</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">path_len</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">len</span>();
+        <span class="kw">let</span> <span class="ident">p_len</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">len</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">is_empty</span>() { <span class="string">&quot;/&quot;</span> } <span class="kw">else</span> { <span class="ident">path</span> };
 
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat_type</span> {
-            <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">segment</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">segment</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">path_len</span>)
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tp</span> {
+            <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">if</span> <span class="ident">s</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">p_len</span>)
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
             }
-
-            <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">prefix</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">prefix_len</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">path</span> <span class="op">=</span><span class="op">=</span> <span class="ident">prefix</span> {
-                    <span class="comment">// path length === prefix segment length</span>
-                    <span class="ident">path_len</span>
-                } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="ident">is_slash_next</span> <span class="op">=</span>
-                        <span class="ident">prefix</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">path</span>.<span class="ident">split_at</span>(<span class="ident">prefix</span>.<span class="ident">len</span>()).<span class="number">1</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>);
-
-                    <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="ident">prefix</span>) <span class="op">&amp;&amp;</span> <span class="ident">is_slash_next</span> {
-                        <span class="comment">// enters this branch if segment delimiter (&quot;/&quot;) is present after prefix</span>
-                        <span class="comment">//</span>
-                        <span class="comment">// i.e., path starts with prefix segment</span>
-                        <span class="comment">// and prefix segment ends with /</span>
-                        <span class="comment">// or first character in path after prefix segment length is /</span>
-                        <span class="comment">//</span>
-                        <span class="comment">// eg: Prefix(&quot;/test/&quot;) or Prefix(&quot;/test&quot;) would match:</span>
-                        <span class="comment">// - /test/foo</span>
-                        <span class="comment">// - /test/foo</span>
-
-                        <span class="kw">if</span> <span class="ident">prefix</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) {
-                            <span class="ident">prefix</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>
-                        } <span class="kw">else</span> {
-                            <span class="ident">prefix</span>.<span class="ident">len</span>()
-                        }
-                    } <span class="kw">else</span> {
-                        <span class="kw">return</span> <span class="prelude-val">None</span>;
-                    }
-                };
-
-                <span class="prelude-val">Some</span>(<span class="ident">min</span>(<span class="ident">path_len</span>, <span class="ident">prefix_len</span>))
-            }
-
             <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">re</span>.<span class="ident">find</span>(<span class="ident">path</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">end</span>()),
-
+            <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">path</span> <span class="op">=</span><span class="op">=</span> <span class="ident">s</span> {
+                    <span class="ident">s</span>.<span class="ident">len</span>()
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="ident">s</span>)
+                    <span class="op">&amp;&amp;</span> (<span class="ident">s</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">path</span>.<span class="ident">split_at</span>(<span class="ident">s</span>.<span class="ident">len</span>()).<span class="number">1</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>))
+                {
+                    <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) {
+                        <span class="ident">s</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>
+                    } <span class="kw">else</span> {
+                        <span class="ident">s</span>.<span class="ident">len</span>()
+                    }
+                } <span class="kw">else</span> {
+                    <span class="kw">return</span> <span class="prelude-val">None</span>;
+                };
+                <span class="prelude-val">Some</span>(<span class="ident">min</span>(<span class="ident">p_len</span>, <span class="ident">len</span>))
+            }
             <span class="ident">PatternType::DynamicSet</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw-2">ref</span> <span class="ident">params</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">re</span>.<span class="ident">matches</span>(<span class="ident">path</span>).<span class="ident">into_iter</span>().<span class="ident">next</span>()<span class="question-mark">?</span>;
                 <span class="kw">let</span> (<span class="kw-2">ref</span> <span class="ident">pattern</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">params</span>[<span class="ident">idx</span>];
@@ -1126,48 +1022,37 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">segments</span>: [<span class="ident">PathItem</span>; <span class="ident">MAX_DYNAMIC_SEGMENTS</span>] <span class="op">=</span> <span class="ident">Default::default</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">resource_path</span>();
 
-        <span class="kw">let</span> (<span class="ident">matched_len</span>, <span class="ident">matched_vars</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat_type</span> {
-            <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">segment</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">segment</span> <span class="op">!</span><span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>() {
+        <span class="kw">let</span> (<span class="ident">matched_len</span>, <span class="ident">matched_vars</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tp</span> {
+            <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">if</span> <span class="ident">s</span> <span class="op">!</span><span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>() {
                     <span class="kw">return</span> <span class="bool-val">false</span>;
                 }
-
                 (<span class="ident">path</span>.<span class="ident">path</span>().<span class="ident">len</span>(), <span class="prelude-val">None</span>)
             }
-
-            <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">prefix</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">path_str</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>();
-                <span class="kw">let</span> <span class="ident">path_len</span> <span class="op">=</span> <span class="ident">path_str</span>.<span class="ident">len</span>();
-
+            <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> {
-                    <span class="kw">if</span> <span class="ident">prefix</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path_str</span> {
-                        <span class="comment">// prefix length === path length</span>
-                        <span class="ident">path_len</span>
-                    } <span class="kw">else</span> {
-                        <span class="kw">let</span> <span class="ident">is_slash_next</span> <span class="op">=</span> <span class="ident">prefix</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>)
-                            <span class="op">|</span><span class="op">|</span> <span class="ident">path_str</span>.<span class="ident">split_at</span>(<span class="ident">prefix</span>.<span class="ident">len</span>()).<span class="number">1</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>);
-
-                        <span class="kw">if</span> <span class="ident">path_str</span>.<span class="ident">starts_with</span>(<span class="ident">prefix</span>) <span class="op">&amp;&amp;</span> <span class="ident">is_slash_next</span> {
-                            <span class="kw">if</span> <span class="ident">prefix</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) {
-                                <span class="ident">prefix</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>
-                            } <span class="kw">else</span> {
-                                <span class="ident">prefix</span>.<span class="ident">len</span>()
-                            }
+                    <span class="kw">let</span> <span class="ident">r_path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>();
+                    <span class="kw">if</span> <span class="ident">s</span> <span class="op">=</span><span class="op">=</span> <span class="ident">r_path</span> {
+                        <span class="ident">s</span>.<span class="ident">len</span>()
+                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r_path</span>.<span class="ident">starts_with</span>(<span class="ident">s</span>)
+                        <span class="op">&amp;&amp;</span> (<span class="ident">s</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">r_path</span>.<span class="ident">split_at</span>(<span class="ident">s</span>.<span class="ident">len</span>()).<span class="number">1</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>))
+                    {
+                        <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) {
+                            <span class="ident">s</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>
                         } <span class="kw">else</span> {
-                            <span class="kw">return</span> <span class="bool-val">false</span>;
+                            <span class="ident">s</span>.<span class="ident">len</span>()
                         }
+                    } <span class="kw">else</span> {
+                        <span class="kw">return</span> <span class="bool-val">false</span>;
                     }
                 };
-
                 (<span class="ident">min</span>(<span class="ident">path</span>.<span class="ident">path</span>().<span class="ident">len</span>(), <span class="ident">len</span>), <span class="prelude-val">None</span>)
             }
-
             <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">captures</span>(<span class="ident">path</span>.<span class="ident">path</span>()) {
                     <span class="prelude-val">Some</span>(<span class="ident">captures</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">captures</span>,
                     <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
                 };
-
                 <span class="kw">for</span> (<span class="ident">no</span>, <span class="ident">name</span>) <span class="kw">in</span> <span class="ident">names</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
                         <span class="ident">segments</span>[<span class="ident">no</span>] <span class="op">=</span> <span class="ident">PathItem::Segment</span>(<span class="ident">m</span>.<span class="ident">start</span>() <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">m</span>.<span class="ident">end</span>() <span class="kw">as</span> <span class="ident">u16</span>);
@@ -1176,22 +1061,18 @@
                         <span class="kw">return</span> <span class="bool-val">false</span>;
                     }
                 }
-
                 (<span class="ident">captures</span>[<span class="number">0</span>].<span class="ident">len</span>(), <span class="prelude-val">Some</span>(<span class="ident">names</span>))
             }
-
             <span class="ident">PatternType::DynamicSet</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw-2">ref</span> <span class="ident">params</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>();
                 <span class="kw">let</span> (<span class="ident">pattern</span>, <span class="ident">names</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">matches</span>(<span class="ident">path</span>).<span class="ident">into_iter</span>().<span class="ident">next</span>() {
                     <span class="prelude-val">Some</span>(<span class="ident">idx</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">params</span>[<span class="ident">idx</span>],
                     <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
                 };
-
                 <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">pattern</span>.<span class="ident">captures</span>(<span class="ident">path</span>.<span class="ident">path</span>()) {
                     <span class="prelude-val">Some</span>(<span class="ident">captures</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">captures</span>,
                     <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
                 };
-
                 <span class="kw">for</span> (<span class="ident">no</span>, <span class="ident">name</span>) <span class="kw">in</span> <span class="ident">names</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
                         <span class="ident">segments</span>[<span class="ident">no</span>] <span class="op">=</span> <span class="ident">PathItem::Segment</span>(<span class="ident">m</span>.<span class="ident">start</span>() <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">m</span>.<span class="ident">end</span>() <span class="kw">as</span> <span class="ident">u16</span>);
@@ -1200,7 +1081,6 @@
                         <span class="kw">return</span> <span class="bool-val">false</span>;
                     }
                 }
-
                 (<span class="ident">captures</span>[<span class="number">0</span>].<span class="ident">len</span>(), <span class="prelude-val">Some</span>(<span class="ident">names</span>))
             }
         };
@@ -1239,7 +1119,6 @@
                 },
             }
         }
-
         <span class="bool-val">true</span>
     }
 
@@ -1269,7 +1148,6 @@
     <span class="kw">fn</span> <span class="ident">parse_param</span>(<span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">PatternElement</span>, <span class="ident">String</span>, <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">bool</span>) {
         <span class="kw">const</span> <span class="ident">DEFAULT_PATTERN</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;[^/]+&quot;</span>;
         <span class="kw">const</span> <span class="ident">DEFAULT_PATTERN_TAIL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;.*&quot;</span>;
-
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params_nesting</span> <span class="op">=</span> <span class="number">0usize</span>;
         <span class="kw">let</span> <span class="ident">close_idx</span> <span class="op">=</span> <span class="ident">pattern</span>
             .<span class="ident">find</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">c</span> {
@@ -1284,7 +1162,6 @@
                 <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
             })
             .<span class="ident">expect</span>(<span class="string">&quot;malformed dynamic segment&quot;</span>);
-
         <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">param</span>, <span class="kw-2">mut</span> <span class="ident">rem</span>) <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">split_at</span>(<span class="ident">close_idx</span> <span class="op">+</span> <span class="number">1</span>);
         <span class="ident">param</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">param</span>[<span class="number">1</span>..<span class="ident">param</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>]; <span class="comment">// Remove outer brackets</span>
         <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="ident">rem</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;*&quot;</span>;
@@ -1307,7 +1184,6 @@
                 },
             ),
         };
-
         (
             <span class="ident">PatternElement::Var</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
             <span class="macro">format!</span>(<span class="string">r&quot;(?P&lt;{}&gt;{})&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">pattern</span>),
@@ -1337,19 +1213,15 @@
 
         <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">idx</span>) <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">find</span>(<span class="string">&#39;{&#39;</span>) {
             <span class="kw">let</span> (<span class="ident">prefix</span>, <span class="ident">rem</span>) <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">split_at</span>(<span class="ident">idx</span>);
-
             <span class="ident">elements</span>.<span class="ident">push</span>(<span class="ident">PatternElement::Const</span>(<span class="ident">String::from</span>(<span class="ident">prefix</span>)));
             <span class="ident">re</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">escape</span>(<span class="ident">prefix</span>));
-
             <span class="kw">let</span> (<span class="ident">param_pattern</span>, <span class="ident">re_part</span>, <span class="ident">rem</span>, <span class="ident">tail</span>) <span class="op">=</span> <span class="self">Self</span><span class="ident">::parse_param</span>(<span class="ident">rem</span>);
-
             <span class="kw">if</span> <span class="ident">tail</span> {
                 <span class="ident">for_prefix</span> <span class="op">=</span> <span class="bool-val">true</span>;
             }
 
             <span class="ident">elements</span>.<span class="ident">push</span>(<span class="ident">param_pattern</span>);
             <span class="ident">re</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">re_part</span>);
-
             <span class="ident">pattern</span> <span class="op">=</span> <span class="ident">rem</span>;
             <span class="ident">dyn_elements</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         }
@@ -1415,14 +1287,12 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">insert_slash</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">str</span><span class="op">&gt;</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">insert_slash</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">to_owned</span>();
     <span class="kw">if</span> <span class="op">!</span><span class="ident">path</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_path</span> <span class="op">=</span> <span class="string">&quot;/&quot;</span>.<span class="ident">to_owned</span>();
-        <span class="ident">new_path</span>.<span class="ident">push_str</span>(<span class="ident">path</span>);
-        <span class="ident">Cow::Owned</span>(<span class="ident">new_path</span>)
-    } <span class="kw">else</span> {
-        <span class="ident">Cow::Borrowed</span>(<span class="ident">path</span>)
-    }
+        <span class="ident">path</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="string">&#39;/&#39;</span>);
+    };
+    <span class="ident">path</span>
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
