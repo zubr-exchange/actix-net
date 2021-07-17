@@ -1049,6 +1049,22 @@
 <span id="1049">1049</span>
 <span id="1050">1050</span>
 <span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow</span>::{<span class="ident">Borrow</span>, <span class="ident">Cow</span>},
@@ -1060,8 +1076,10 @@
 
 <span class="kw">use</span> <span class="ident">regex</span>::{<span class="ident">escape</span>, <span class="ident">Regex</span>, <span class="ident">RegexSet</span>};
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::path</span>::{<span class="ident">Path</span>, <span class="ident">PathItem</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">IntoPattern</span>, <span class="ident">Resource</span>, <span class="ident">ResourcePath</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathItem</span>},
+    <span class="ident">IntoPatterns</span>, <span class="ident">Patterns</span>, <span class="ident">Resource</span>, <span class="ident">ResourcePath</span>,
+};
 
 <span class="kw">const</span> <span class="ident">MAX_DYNAMIC_SEGMENTS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">16</span>;
 
@@ -1077,15 +1095,15 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResourceDef</span> {
     <span class="ident">id</span>: <span class="ident">u16</span>,
 
-    <span class="doccomment">/// Pattern type.</span>
-    <span class="ident">pat_type</span>: <span class="ident">PatternType</span>,
-
     <span class="doccomment">/// Optional name of resource definition. Defaults to &quot;&quot;.</span>
     <span class="ident">name</span>: <span class="ident">String</span>,
 
     <span class="doccomment">/// Pattern that generated the resource definition.</span>
     <span class="comment">// TODO: Sort of, in dynamic set pattern type it is blank, consider change to option.</span>
     <span class="ident">pattern</span>: <span class="ident">String</span>,
+
+    <span class="doccomment">/// Pattern type.</span>
+    <span class="ident">pat_type</span>: <span class="ident">PatternType</span>,
 
     <span class="doccomment">/// List of elements that compose the pattern, in order.</span>
     <span class="doccomment">///</span>
@@ -1127,29 +1145,43 @@
     <span class="doccomment">/// Parse path pattern and create new `Pattern` instance.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Panics if path pattern is malformed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoPattern</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">is_single</span>() {
-            <span class="ident">ResourceDef::from_single_pattern</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>.<span class="ident">patterns</span>()[<span class="number">0</span>], <span class="bool-val">false</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">re_set</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoPatterns</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">patterns</span>() {
+            <span class="ident">Patterns::Single</span>(<span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ResourceDef::from_single_pattern</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="bool-val">false</span>),
 
-            <span class="kw">for</span> <span class="ident">pattern</span> <span class="kw">in</span> <span class="ident">path</span>.<span class="ident">patterns</span>() {
-                <span class="kw">match</span> <span class="ident">ResourceDef::parse</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>) {
-                    (<span class="ident">PatternType::Dynamic</span>(<span class="ident">re</span>, <span class="ident">names</span>), <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="ident">re_set</span>.<span class="ident">push</span>(<span class="ident">re</span>.<span class="ident">as_str</span>().<span class="ident">to_owned</span>());
-                        <span class="ident">data</span>.<span class="ident">push</span>((<span class="ident">re</span>, <span class="ident">names</span>));
-                    }
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(),
-                }
-            }
-
-            <span class="ident">ResourceDef</span> {
+            <span class="comment">// since zero length pattern sets are possible</span>
+            <span class="comment">// just return a useless `ResourceDef`</span>
+            <span class="ident">Patterns::List</span>(<span class="ident">patterns</span>) <span class="kw">if</span> <span class="ident">patterns</span>.<span class="ident">is_empty</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ResourceDef</span> {
                 <span class="ident">id</span>: <span class="number">0</span>,
-                <span class="ident">pat_type</span>: <span class="ident">PatternType::DynamicSet</span>(<span class="ident">RegexSet::new</span>(<span class="ident">re_set</span>).<span class="ident">unwrap</span>(), <span class="ident">data</span>),
-                <span class="ident">elements</span>: <span class="prelude-val">None</span>,
                 <span class="ident">name</span>: <span class="ident">String::new</span>(),
-                <span class="ident">pattern</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>(),
+                <span class="ident">pattern</span>: <span class="ident">String::new</span>(),
+                <span class="ident">pat_type</span>: <span class="ident">PatternType::DynamicSet</span>(<span class="ident">RegexSet::empty</span>(), <span class="ident">Vec::new</span>()),
+                <span class="ident">elements</span>: <span class="prelude-val">None</span>,
+            },
+
+            <span class="ident">Patterns::List</span>(<span class="ident">patterns</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">re_set</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">patterns</span>.<span class="ident">len</span>());
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pattern_data</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+
+                <span class="kw">for</span> <span class="ident">pattern</span> <span class="kw">in</span> <span class="ident">patterns</span> {
+                    <span class="kw">match</span> <span class="ident">ResourceDef::parse</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>) {
+                        (<span class="ident">PatternType::Dynamic</span>(<span class="ident">re</span>, <span class="ident">names</span>), <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">re_set</span>.<span class="ident">push</span>(<span class="ident">re</span>.<span class="ident">as_str</span>().<span class="ident">to_owned</span>());
+                            <span class="ident">pattern_data</span>.<span class="ident">push</span>((<span class="ident">re</span>, <span class="ident">names</span>));
+                        }
+                        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(),
+                    }
+                }
+
+                <span class="kw">let</span> <span class="ident">pattern_re_set</span> <span class="op">=</span> <span class="ident">RegexSet::new</span>(<span class="ident">re_set</span>).<span class="ident">unwrap</span>();
+
+                <span class="ident">ResourceDef</span> {
+                    <span class="ident">id</span>: <span class="number">0</span>,
+                    <span class="ident">name</span>: <span class="ident">String::new</span>(),
+                    <span class="ident">pattern</span>: <span class="ident">String::new</span>(),
+                    <span class="ident">pat_type</span>: <span class="ident">PatternType::DynamicSet</span>(<span class="ident">pattern_re_set</span>, <span class="ident">pattern_data</span>),
+                    <span class="ident">elements</span>: <span class="prelude-val">None</span>,
+                }
             }
         }
     }
