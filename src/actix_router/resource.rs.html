@@ -1065,6 +1065,49 @@
 <span id="1065">1065</span>
 <span id="1066">1066</span>
 <span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow</span>::{<span class="ident">Borrow</span>, <span class="ident">Cow</span>},
@@ -1074,6 +1117,7 @@
     <span class="ident">mem</span>,
 };
 
+<span class="kw">use</span> <span class="ident">firestorm</span>::{<span class="ident">profile_fn</span>, <span class="ident">profile_method</span>, <span class="ident">profile_section</span>};
 <span class="kw">use</span> <span class="ident">regex</span>::{<span class="ident">escape</span>, <span class="ident">Regex</span>, <span class="ident">RegexSet</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
@@ -1146,6 +1190,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Panics if path pattern is malformed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoPatterns</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">new</span>);
+
         <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">patterns</span>() {
             <span class="ident">Patterns::Single</span>(<span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ResourceDef::from_single_pattern</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="bool-val">false</span>),
 
@@ -1192,6 +1238,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Panics if path regex pattern is malformed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prefix</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">prefix</span>);
         <span class="ident">ResourceDef::from_single_pattern</span>(<span class="ident">path</span>, <span class="bool-val">true</span>)
     }
 
@@ -1202,6 +1249,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Panics if path regex pattern is malformed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">root_prefix</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">root_prefix</span>);
         <span class="ident">ResourceDef::from_single_pattern</span>(<span class="kw-2">&amp;</span><span class="ident">insert_slash</span>(<span class="ident">path</span>), <span class="bool-val">true</span>)
     }
 
@@ -1217,6 +1265,8 @@
 
     <span class="doccomment">/// Parse path pattern and create a new instance</span>
     <span class="kw">fn</span> <span class="ident">from_single_pattern</span>(<span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">for_prefix</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">from_single_pattern</span>);
+
         <span class="kw">let</span> <span class="ident">pattern</span> <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">to_owned</span>();
         <span class="kw">let</span> (<span class="ident">pat_type</span>, <span class="ident">elements</span>) <span class="op">=</span> <span class="ident">ResourceDef::parse</span>(<span class="kw-2">&amp;</span><span class="ident">pattern</span>, <span class="ident">for_prefix</span>, <span class="bool-val">false</span>);
 
@@ -1247,6 +1297,8 @@
     <span class="doccomment">/// Check if path matches this pattern.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">is_match</span>);
+
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat_type</span> {
             <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">s</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path</span>,
             <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="ident">s</span>),
@@ -1257,6 +1309,8 @@
 
     <span class="doccomment">/// Is prefix path a match against this resource.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prefix_match</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">is_prefix_match</span>);
+
         <span class="kw">let</span> <span class="ident">path_len</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">len</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">is_empty</span>() { <span class="string">&quot;/&quot;</span> } <span class="kw">else</span> { <span class="ident">path</span> };
 
@@ -1313,6 +1367,7 @@
 
     <span class="doccomment">/// Is the given path and parameters a match against this pattern.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">match_path</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ResourcePath</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="macro">profile_method!</span>(<span class="ident">match_path</span>);
         <span class="self">self</span>.<span class="ident">match_path_checked</span>(<span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(()))
     }
 
@@ -1328,11 +1383,15 @@
         <span class="ident">R</span>: <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">R</span>, <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
     {
+        <span class="macro">profile_method!</span>(<span class="ident">match_path_checked</span>);
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">segments</span>: [<span class="ident">PathItem</span>; <span class="ident">MAX_DYNAMIC_SEGMENTS</span>] <span class="op">=</span> <span class="ident">Default::default</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">resource_path</span>();
 
         <span class="kw">let</span> (<span class="ident">matched_len</span>, <span class="ident">matched_vars</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat_type</span> {
             <span class="ident">PatternType::Static</span>(<span class="kw-2">ref</span> <span class="ident">segment</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">profile_section!</span>(<span class="ident">pattern_static</span>);
+
                 <span class="kw">if</span> <span class="ident">segment</span> <span class="op">!</span><span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>() {
                     <span class="kw">return</span> <span class="bool-val">false</span>;
                 }
@@ -1341,6 +1400,8 @@
             }
 
             <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">prefix</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">profile_section!</span>(<span class="ident">pattern_dynamic</span>);
+
                 <span class="kw">let</span> <span class="ident">path_str</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>();
                 <span class="kw">let</span> <span class="ident">path_len</span> <span class="op">=</span> <span class="ident">path_str</span>.<span class="ident">len</span>();
 
@@ -1368,24 +1429,39 @@
             }
 
             <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">captures</span>(<span class="ident">path</span>.<span class="ident">path</span>()) {
-                    <span class="prelude-val">Some</span>(<span class="ident">captures</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">captures</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
+                <span class="macro">profile_section!</span>(<span class="ident">pattern_dynamic</span>);
+
+                <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> {
+                    <span class="macro">profile_section!</span>(<span class="ident">pattern_dynamic_regex_exec</span>);
+
+                    <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">captures</span>(<span class="ident">path</span>.<span class="ident">path</span>()) {
+                        <span class="prelude-val">Some</span>(<span class="ident">captures</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">captures</span>,
+                        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
+                    }
                 };
 
-                <span class="kw">for</span> (<span class="ident">no</span>, <span class="ident">name</span>) <span class="kw">in</span> <span class="ident">names</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
-                        <span class="ident">segments</span>[<span class="ident">no</span>] <span class="op">=</span> <span class="ident">PathItem::Segment</span>(<span class="ident">m</span>.<span class="ident">start</span>() <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">m</span>.<span class="ident">end</span>() <span class="kw">as</span> <span class="ident">u16</span>);
-                    } <span class="kw">else</span> {
-                        <span class="macro">log::error!</span>(<span class="string">&quot;Dynamic path match but not all segments found: {}&quot;</span>, <span class="ident">name</span>);
-                        <span class="kw">return</span> <span class="bool-val">false</span>;
+                {
+                    <span class="macro">profile_section!</span>(<span class="ident">pattern_dynamic_extract_captures</span>);
+
+                    <span class="kw">for</span> (<span class="ident">no</span>, <span class="ident">name</span>) <span class="kw">in</span> <span class="ident">names</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
+                            <span class="ident">segments</span>[<span class="ident">no</span>] <span class="op">=</span> <span class="ident">PathItem::Segment</span>(<span class="ident">m</span>.<span class="ident">start</span>() <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">m</span>.<span class="ident">end</span>() <span class="kw">as</span> <span class="ident">u16</span>);
+                        } <span class="kw">else</span> {
+                            <span class="macro">log::error!</span>(
+                                <span class="string">&quot;Dynamic path match but not all segments found: {}&quot;</span>,
+                                <span class="ident">name</span>
+                            );
+                            <span class="kw">return</span> <span class="bool-val">false</span>;
+                        }
                     }
-                }
+                };
 
                 (<span class="ident">captures</span>[<span class="number">0</span>].<span class="ident">len</span>(), <span class="prelude-val">Some</span>(<span class="ident">names</span>))
             }
 
             <span class="ident">PatternType::DynamicSet</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw-2">ref</span> <span class="ident">params</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">profile_section!</span>(<span class="ident">pattern_dynamic_set</span>);
+
                 <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">path</span>();
                 <span class="kw">let</span> (<span class="ident">pattern</span>, <span class="ident">names</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">matches</span>(<span class="ident">path</span>).<span class="ident">into_iter</span>().<span class="ident">next</span>() {
                     <span class="prelude-val">Some</span>(<span class="ident">idx</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">params</span>[<span class="ident">idx</span>],
@@ -1462,6 +1538,7 @@
         <span class="ident">U</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">I</span><span class="op">&gt;</span>,
         <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
+        <span class="macro">profile_method!</span>(<span class="ident">resource_path_from_iter</span>);
         <span class="self">self</span>.<span class="ident">build_resource_path</span>(<span class="ident">path</span>, <span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">elements</span>.<span class="ident">next</span>())
     }
 
@@ -1472,6 +1549,7 @@
         <span class="ident">U</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">I</span><span class="op">&gt;</span>,
         <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
+        <span class="macro">profile_method!</span>(<span class="ident">build_resource_path</span>);
         <span class="self">self</span>.<span class="ident">resource_path_from_iter</span>(<span class="ident">path</span>, <span class="ident">elements</span>)
     }
 
@@ -1488,6 +1566,7 @@
         <span class="ident">V</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
         <span class="ident">S</span>: <span class="ident">BuildHasher</span>,
     {
+        <span class="macro">profile_method!</span>(<span class="ident">resource_path_from_map</span>);
         <span class="self">self</span>.<span class="ident">build_resource_path</span>(<span class="ident">path</span>, <span class="op">|</span><span class="ident">name</span><span class="op">|</span> {
             <span class="ident">name</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">name</span><span class="op">|</span> <span class="ident">elements</span>.<span class="ident">get</span>(<span class="ident">name</span>).<span class="ident">map</span>(<span class="ident">AsRef</span>::<span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::as_ref</span>))
         })
@@ -1526,6 +1605,7 @@
         <span class="ident">S</span>: <span class="ident">BuildHasher</span>,
         <span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
+        <span class="macro">profile_method!</span>(<span class="ident">resource_path_from_map_with_tail</span>);
         <span class="self">self</span>.<span class="ident">build_resource_path</span>(<span class="ident">path</span>, <span class="op">|</span><span class="ident">name</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">name</span> {
             <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">elements</span>.<span class="ident">get</span>(<span class="ident">name</span>).<span class="ident">map</span>(<span class="ident">AsRef</span>::<span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::as_ref</span>),
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">tail</span>.<span class="ident">as_ref</span>()),
@@ -1533,6 +1613,8 @@
     }
 
     <span class="kw">fn</span> <span class="ident">parse_param</span>(<span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">PatternElement</span>, <span class="ident">String</span>, <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+        <span class="macro">profile_method!</span>(<span class="ident">parse_param</span>);
+
         <span class="kw">const</span> <span class="ident">DEFAULT_PATTERN</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;[^/]+&quot;</span>;
         <span class="kw">const</span> <span class="ident">DEFAULT_PATTERN_TAIL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;.*&quot;</span>;
 
@@ -1594,6 +1676,8 @@
         <span class="ident">for_prefix</span>: <span class="ident">bool</span>,
         <span class="ident">force_dynamic</span>: <span class="ident">bool</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">PatternType</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PatternElement</span><span class="op">&gt;</span>) {
+        <span class="macro">profile_method!</span>(<span class="ident">parse</span>);
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">unprocessed</span> <span class="op">=</span> <span class="ident">pattern</span>;
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">force_dynamic</span> <span class="op">&amp;&amp;</span> <span class="ident">unprocessed</span>.<span class="ident">find</span>(<span class="string">&#39;{&#39;</span>).<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">unprocessed</span>.<span class="ident">ends_with</span>(<span class="string">&#39;*&#39;</span>) {
@@ -1705,6 +1789,8 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">insert_slash</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="macro">profile_fn!</span>(<span class="ident">insert_slash</span>);
+
     <span class="kw">if</span> <span class="op">!</span><span class="ident">path</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>) {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_path</span> <span class="op">=</span> <span class="ident">String::with_capacity</span>(<span class="ident">path</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>);
         <span class="ident">new_path</span>.<span class="ident">push</span>(<span class="string">&#39;/&#39;</span>);
