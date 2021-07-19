@@ -124,6 +124,14 @@
 <span id="124">124</span>
 <span id="125">125</span>
 <span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Resource path matching library.</span>
 
@@ -141,6 +149,8 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::resource::ResourceDef</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::router</span>::{<span class="ident">ResourceInfo</span>, <span class="ident">Router</span>, <span class="ident">RouterBuilder</span>};
 
+<span class="comment">// TODO: this trait is necessary, document it</span>
+<span class="comment">// see impl Resource for ServiceRequest</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ResourcePath</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">resource_path</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
 }
@@ -168,7 +178,7 @@
 }
 
 <span class="doccomment">/// One or many patterns.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Patterns</span> {
     <span class="ident">Single</span>(<span class="ident">String</span>),
     <span class="ident">List</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>),
@@ -194,6 +204,12 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">IntoPatterns</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">fn</span> <span class="ident">patterns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Patterns</span> {
         <span class="ident">Patterns::Single</span>((<span class="kw-2">*</span><span class="self">self</span>).<span class="ident">to_owned</span>())
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IntoPatterns</span> <span class="kw">for</span> <span class="ident">bytestring::ByteString</span> {
+    <span class="kw">fn</span> <span class="ident">patterns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Patterns</span> {
+        <span class="ident">Patterns::Single</span>(<span class="self">self</span>.<span class="ident">to_string</span>())
     }
 }
 
