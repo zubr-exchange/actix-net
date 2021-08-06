@@ -1676,6 +1676,45 @@
 <span id="1676">1676</span>
 <span id="1677">1677</span>
 <span id="1678">1678</span>
+<span id="1679">1679</span>
+<span id="1680">1680</span>
+<span id="1681">1681</span>
+<span id="1682">1682</span>
+<span id="1683">1683</span>
+<span id="1684">1684</span>
+<span id="1685">1685</span>
+<span id="1686">1686</span>
+<span id="1687">1687</span>
+<span id="1688">1688</span>
+<span id="1689">1689</span>
+<span id="1690">1690</span>
+<span id="1691">1691</span>
+<span id="1692">1692</span>
+<span id="1693">1693</span>
+<span id="1694">1694</span>
+<span id="1695">1695</span>
+<span id="1696">1696</span>
+<span id="1697">1697</span>
+<span id="1698">1698</span>
+<span id="1699">1699</span>
+<span id="1700">1700</span>
+<span id="1701">1701</span>
+<span id="1702">1702</span>
+<span id="1703">1703</span>
+<span id="1704">1704</span>
+<span id="1705">1705</span>
+<span id="1706">1706</span>
+<span id="1707">1707</span>
+<span id="1708">1708</span>
+<span id="1709">1709</span>
+<span id="1710">1710</span>
+<span id="1711">1711</span>
+<span id="1712">1712</span>
+<span id="1713">1713</span>
+<span id="1714">1714</span>
+<span id="1715">1715</span>
+<span id="1716">1716</span>
+<span id="1717">1717</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow</span>::{<span class="ident">Borrow</span>, <span class="ident">Cow</span>},
@@ -2251,6 +2290,20 @@
             <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">prefix</span>) <span class="kw">if</span> <span class="ident">prefix</span> <span class="op">=</span><span class="op">=</span> <span class="ident">path</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">PatternType::Prefix</span>(<span class="kw-2">ref</span> <span class="ident">prefix</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">is_strict_prefix</span>(<span class="ident">prefix</span>, <span class="ident">path</span>),
 
+            <span class="comment">// dynamic prefix</span>
+            <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">re</span>.<span class="ident">as_str</span>().<span class="ident">ends_with</span>(<span class="string">&#39;$&#39;</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">find</span>(<span class="ident">path</span>) {
+                    <span class="comment">// prefix matches exactly</span>
+                    <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">path</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+
+                    <span class="comment">// prefix matches part</span>
+                    <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">is_strict_prefix</span>(<span class="ident">m</span>.<span class="ident">as_str</span>(), <span class="ident">path</span>),
+
+                    <span class="comment">// prefix does not match</span>
+                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                }
+            }
+
             <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">re</span>.<span class="ident">is_match</span>(<span class="ident">path</span>),
             <span class="ident">PatternType::DynamicSet</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">re</span>.<span class="ident">is_match</span>(<span class="ident">path</span>),
         }
@@ -2302,6 +2355,20 @@
             <span class="ident">PatternType::Prefix</span>(<span class="ident">prefix</span>) <span class="kw">if</span> <span class="ident">is_strict_prefix</span>(<span class="ident">prefix</span>, <span class="ident">path</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">prefix</span>.<span class="ident">len</span>()),
             <span class="ident">PatternType::Prefix</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
 
+            <span class="comment">// dynamic prefix</span>
+            <span class="ident">PatternType::Dynamic</span>(<span class="kw-2">ref</span> <span class="ident">re</span>, <span class="kw">_</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">re</span>.<span class="ident">as_str</span>().<span class="ident">ends_with</span>(<span class="string">&#39;$&#39;</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">match</span> <span class="ident">re</span>.<span class="ident">find</span>(<span class="ident">path</span>) {
+                    <span class="comment">// prefix matches exactly</span>
+                    <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">path</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>.<span class="ident">end</span>()),
+
+                    <span class="comment">// prefix matches part</span>
+                    <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="kw">if</span> <span class="ident">is_strict_prefix</span>(<span class="ident">m</span>.<span class="ident">as_str</span>(), <span class="ident">path</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>.<span class="ident">end</span>()),
+
+                    <span class="comment">// prefix does not match</span>
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                }
+            }
+
             <span class="ident">PatternType::Dynamic</span>(<span class="ident">re</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">re</span>.<span class="ident">find</span>(<span class="ident">path</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">end</span>()),
 
             <span class="ident">PatternType::DynamicSet</span>(<span class="ident">re</span>, <span class="ident">params</span>) <span class="op">=</span><span class="op">&gt;</span> {
@@ -2333,7 +2400,7 @@
     <span class="doccomment">/// assert_eq!(path.unprocessed(), &quot;&quot;);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">capture_match_info</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">ResourcePath</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="macro">profile_method!</span>(<span class="ident">is_path_match</span>);
+        <span class="macro">profile_method!</span>(<span class="ident">capture_match_info</span>);
         <span class="self">self</span>.<span class="ident">capture_match_info_fn</span>(<span class="ident">path</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="bool-val">true</span>, ())
     }
 
@@ -2386,7 +2453,7 @@
         <span class="ident">T</span>: <span class="ident">ResourcePath</span>,
         <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="ident">R</span>, <span class="ident">U</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
     {
-        <span class="macro">profile_method!</span>(<span class="ident">is_path_match_fn</span>);
+        <span class="macro">profile_method!</span>(<span class="ident">capture_match_info_fn</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">segments</span> <span class="op">=</span> <span class="op">&lt;</span>[<span class="ident">PathItem</span>; <span class="ident">MAX_DYNAMIC_SEGMENTS</span>]<span class="op">&gt;</span><span class="ident">::default</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">resource</span>.<span class="ident">resource_path</span>();
@@ -3154,10 +3221,6 @@
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>[<span class="number">0</span>], <span class="string">&quot;test2&quot;</span>);
         <span class="macro">assert_eq!</span>(<span class="ident">path</span>.<span class="ident">unprocessed</span>(), <span class="string">&quot;subpath1/subpath2/index.html&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">resource</span> <span class="op">=</span> <span class="ident">ResourceDef::prefix</span>(<span class="string">r&quot;/id/{id:\d{3}}&quot;</span>);
-        <span class="macro">assert!</span>(<span class="ident">resource</span>.<span class="ident">is_match</span>(<span class="string">&quot;/id/1234&quot;</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/id/1234&quot;</span>), <span class="prelude-val">Some</span>(<span class="number">7</span>));
-
         <span class="kw">let</span> <span class="ident">resource</span> <span class="op">=</span> <span class="ident">ResourceDef::prefix</span>(<span class="string">&quot;/user&quot;</span>);
         <span class="comment">// input string shorter than prefix</span>
         <span class="macro">assert!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/foo&quot;</span>).<span class="ident">is_none</span>());
@@ -3228,6 +3291,21 @@
         <span class="macro">assert!</span>(<span class="ident">resource</span>.<span class="ident">capture_match_info</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">path</span>));
         <span class="macro">assert!</span>(<span class="ident">path</span>.<span class="ident">get</span>(<span class="string">&quot;id&quot;</span>).<span class="ident">is_none</span>());
         <span class="macro">assert!</span>(<span class="ident">path</span>.<span class="ident">get</span>(<span class="string">&quot;uid&quot;</span>).<span class="ident">is_some</span>());
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">dynamic_prefix_proper_segmentation</span>() {
+        <span class="kw">let</span> <span class="ident">resource</span> <span class="op">=</span> <span class="ident">ResourceDef::prefix</span>(<span class="string">r&quot;/id/{id:\d{3}}&quot;</span>);
+
+        <span class="macro">assert!</span>(<span class="ident">resource</span>.<span class="ident">is_match</span>(<span class="string">&quot;/id/123&quot;</span>));
+        <span class="macro">assert!</span>(<span class="ident">resource</span>.<span class="ident">is_match</span>(<span class="string">&quot;/id/123/foo&quot;</span>));
+        <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">resource</span>.<span class="ident">is_match</span>(<span class="string">&quot;/id/1234&quot;</span>));
+        <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">resource</span>.<span class="ident">is_match</span>(<span class="string">&quot;/id/123a&quot;</span>));
+
+        <span class="macro">assert_eq!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/id/123&quot;</span>), <span class="prelude-val">Some</span>(<span class="number">7</span>));
+        <span class="macro">assert_eq!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/id/123/foo&quot;</span>), <span class="prelude-val">Some</span>(<span class="number">7</span>));
+        <span class="macro">assert_eq!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/id/1234&quot;</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">resource</span>.<span class="ident">find_match</span>(<span class="string">&quot;/id/123a&quot;</span>), <span class="prelude-val">None</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
