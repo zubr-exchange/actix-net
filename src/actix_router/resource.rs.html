@@ -1674,6 +1674,8 @@
 <span id="1674">1674</span>
 <span id="1675">1675</span>
 <span id="1676">1676</span>
+<span id="1677">1677</span>
+<span id="1678">1678</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow</span>::{<span class="ident">Borrow</span>, <span class="ident">Cow</span>},
@@ -2604,7 +2606,9 @@
                 }
                 <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
             })
-            .<span class="ident">expect</span>(<span class="string">&quot;malformed dynamic segment&quot;</span>);
+            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
+                <span class="macro">panic!</span>(<span class="string">r#&quot;path &quot;{}&quot; contains malformed dynamic segment&quot;#</span>, <span class="ident">pattern</span>)
+            });
 
         <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">param</span>, <span class="kw-2">mut</span> <span class="ident">unprocessed</span>) <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">split_at</span>(<span class="ident">close_idx</span> <span class="op">+</span> <span class="number">1</span>);
 
