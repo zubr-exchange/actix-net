@@ -1783,6 +1783,24 @@
 <span id="1783">1783</span>
 <span id="1784">1784</span>
 <span id="1785">1785</span>
+<span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
+<span id="1795">1795</span>
+<span id="1796">1796</span>
+<span id="1797">1797</span>
+<span id="1798">1798</span>
+<span id="1799">1799</span>
+<span id="1800">1800</span>
+<span id="1801">1801</span>
+<span id="1802">1802</span>
+<span id="1803">1803</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow</span>::{<span class="ident">Borrow</span>, <span class="ident">Cow</span>},
@@ -2856,13 +2874,32 @@
             <span class="ident">dyn_segment_count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         }
 
+        <span class="kw">if</span> <span class="ident">is_prefix</span> <span class="op">&amp;&amp;</span> <span class="ident">has_tail_segment</span> {
+            <span class="comment">// tail segments in prefixes have no defined semantics</span>
+
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
+            <span class="macro">log::warn!</span>(
+                <span class="string">&quot;Prefix resources should not have tail segments. \
+                Use `ResourceDef::new` constructor. \
+                This may become a panic in the future.&quot;</span>
+            );
+
+            <span class="comment">// panic in tests to make this case detectable</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+            <span class="macro">panic!</span>(<span class="string">&quot;prefix resource definitions should not have tail segments&quot;</span>);
+        }
+
         <span class="kw">if</span> <span class="ident">unprocessed</span>.<span class="ident">ends_with</span>(<span class="string">&#39;*&#39;</span>) {
             <span class="comment">// unnamed tail segment</span>
 
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
-            <span class="macro">log::warn!</span>(<span class="string">&quot;tail segments must have names; consider `{{tail}}*`&quot;</span>);
+            <span class="macro">log::warn!</span>(
+                <span class="string">&quot;Tail segments must have names. \
+                Consider `.../{{tail}}*`. \
+                This may become a panic in the future.&quot;</span>
+            );
 
-            <span class="comment">// to this case detectable in tests</span>
+            <span class="comment">// panic in tests to make this case detectable</span>
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
             <span class="macro">panic!</span>(<span class="string">&quot;tail segments must have names&quot;</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">has_tail_segment</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">unprocessed</span>.<span class="ident">is_empty</span>() {
@@ -2983,7 +3020,6 @@
 
         <span class="macro">assert_eq!</span>(<span class="ident">ResourceDef::new</span>(<span class="string">&quot;/&quot;</span>), <span class="ident">ResourceDef::new</span>([<span class="string">&quot;/&quot;</span>]));
         <span class="macro">assert_eq!</span>(<span class="ident">ResourceDef::new</span>(<span class="string">&quot;/&quot;</span>), <span class="ident">ResourceDef::new</span>(<span class="macro">vec!</span>[<span class="string">&quot;/&quot;</span>]));
-        <span class="macro">assert_eq!</span>(<span class="ident">ResourceDef::new</span>(<span class="string">&quot;/{id}*&quot;</span>), <span class="ident">ResourceDef::prefix</span>(<span class="string">&quot;/{id}*&quot;</span>));
 
         <span class="macro">assert_ne!</span>(<span class="ident">ResourceDef::new</span>(<span class="string">&quot;&quot;</span>), <span class="ident">ResourceDef::prefix</span>(<span class="string">&quot;&quot;</span>));
         <span class="macro">assert_ne!</span>(<span class="ident">ResourceDef::new</span>(<span class="string">&quot;/&quot;</span>), <span class="ident">ResourceDef::prefix</span>(<span class="string">&quot;/&quot;</span>));
@@ -3560,11 +3596,11 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">invalid_unnamed_tail_segment</span>() {
-        <span class="ident">ResourceDef::new</span>(<span class="string">r&quot;/*&quot;</span>);
+        <span class="ident">ResourceDef::new</span>(<span class="string">&quot;/*&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="comment">// #[should_panic] // TODO: consider if this should be allowed</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">prefix_plus_tail_match_is_allowed</span>() {
         <span class="ident">ResourceDef::prefix</span>(<span class="string">&quot;/user/{id}*&quot;</span>);
     }
