@@ -392,8 +392,7 @@
 <span id="392">392</span>
 <span id="393">393</span>
 <span id="394">394</span>
-</pre><pre class="rust">
-<span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">future::Future</span>, <span class="ident">marker::PhantomData</span>};
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">future::Future</span>, <span class="ident">marker::PhantomData</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ok</span>, <span class="ident">IntoService</span>, <span class="ident">IntoServiceFactory</span>, <span class="ident">Ready</span>, <span class="ident">Service</span>, <span class="ident">ServiceFactory</span>};
 
@@ -519,7 +518,7 @@
     <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Res</span>, <span class="prelude-val">Err</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span><span class="ident">::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
+        <span class="ident"><span class="self">Self</span>::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
     }
 }
 
@@ -532,9 +531,9 @@
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="prelude-val">Err</span>;
     <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Fut</span>;
 
-    <span class="kw">crate</span><span class="macro">::always_ready!</span>();
+    <span class="macro">crate::always_ready!</span>();
 
-    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Future</span> {
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
         (<span class="self">self</span>.<span class="ident">f</span>)(<span class="ident">req</span>)
     }
 }
@@ -574,7 +573,7 @@
     <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Res</span>, <span class="prelude-val">Err</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span><span class="ident">::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
+        <span class="ident"><span class="self">Self</span>::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
     }
 }
 
@@ -587,9 +586,9 @@
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="prelude-val">Err</span>;
     <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Fut</span>;
 
-    <span class="kw">crate</span><span class="macro">::always_ready!</span>();
+    <span class="macro">crate::always_ready!</span>();
 
-    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Future</span> {
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="ident">Req</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
         (<span class="self">self</span>.<span class="ident">f</span>)(<span class="ident">req</span>)
     }
 }
@@ -606,9 +605,9 @@
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Cfg</span>;
     <span class="kw">type</span> <span class="ident">Service</span> <span class="op">=</span> <span class="ident">FnService</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">Fut</span>, <span class="ident">Req</span>, <span class="ident">Res</span>, <span class="prelude-val">Err</span><span class="op">&gt;</span>;
     <span class="kw">type</span> <span class="ident">InitError</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Ready</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="ident">::Service</span>, <span class="self">Self</span><span class="ident">::InitError</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Ready</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Service</span>, <span class="ident"><span class="self">Self</span>::InitError</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
-    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Future</span> {
+    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
         <span class="ident">ok</span>(<span class="ident">FnService::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>()))
     }
 }
@@ -675,7 +674,7 @@
     <span class="kw">type</span> <span class="ident">InitError</span> <span class="op">=</span> <span class="prelude-val">Err</span>;
     <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Fut</span>;
 
-    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cfg</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Future</span> {
+    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cfg</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
         (<span class="self">self</span>.<span class="ident">f</span>)(<span class="ident">cfg</span>)
     }
 }
@@ -716,7 +715,7 @@
     <span class="kw">type</span> <span class="ident">InitError</span> <span class="op">=</span> <span class="prelude-val">Err</span>;
     <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Fut</span>;
 
-    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Future</span> {
+    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">Cfg</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Future</span> {
         (<span class="self">self</span>.<span class="ident">f</span>)()
     }
 }
@@ -728,7 +727,7 @@
     <span class="ident">Srv</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span><span class="ident">::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
+        <span class="ident"><span class="self">Self</span>::new</span>(<span class="self">self</span>.<span class="ident">f</span>.<span class="ident">clone</span>())
     }
 }
 
@@ -787,7 +786,7 @@
         <span class="macro">assert_eq!</span>(<span class="ident">res</span>.<span class="ident">unwrap</span>(), (<span class="string">&quot;srv&quot;</span>, <span class="number">1</span>));
     }
 }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="actix_service" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>

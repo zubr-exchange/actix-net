@@ -1,7 +1,6 @@
 var N = null;var sourcesIndex = {};
 sourcesIndex["actix_codec"] = {"name":"","files":["bcodec.rs","framed.rs","lib.rs"]};
 sourcesIndex["actix_macros"] = {"name":"","files":["lib.rs"]};
-sourcesIndex["actix_router"] = {"name":"","files":["de.rs","lib.rs","path.rs","resource.rs","router.rs","url.rs"]};
 sourcesIndex["actix_rt"] = {"name":"","files":["arbiter.rs","lib.rs","runtime.rs","system.rs"]};
 sourcesIndex["actix_server"] = {"name":"","files":["accept.rs","builder.rs","lib.rs","server.rs","service.rs","signals.rs","socket.rs","test_server.rs","waker_queue.rs","worker.rs"]};
 sourcesIndex["actix_service"] = {"name":"","files":["and_then.rs","apply.rs","apply_cfg.rs","boxed.rs","ext.rs","fn_service.rs","lib.rs","macros.rs","map.rs","map_config.rs","map_err.rs","map_init_err.rs","pipeline.rs","ready.rs","then.rs","transform.rs","transform_err.rs"]};

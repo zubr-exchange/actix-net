@@ -166,8 +166,7 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
-</pre><pre class="rust">
-<span class="doccomment">//! Tokio-based single-threaded async runtime for the Actix ecosystem.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Tokio-based single-threaded async runtime for the Actix ecosystem.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! In most parts of the the Actix ecosystem, it has been chosen to use !Send futures. For this</span>
 <span class="doccomment">//! reason, a single-threaded runtime is appropriate since it is guaranteed that futures will not</span>
@@ -221,9 +220,9 @@
 <span class="kw">mod</span> <span class="ident">runtime</span>;
 <span class="kw">mod</span> <span class="ident">system</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::arbiter</span>::{<span class="ident">Arbiter</span>, <span class="ident">ArbiterHandle</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::runtime::Runtime</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::system</span>::{<span class="ident">System</span>, <span class="ident">SystemRunner</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::arbiter</span>::{<span class="ident">Arbiter</span>, <span class="ident">ArbiterHandle</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::runtime::Runtime</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::system</span>::{<span class="ident">System</span>, <span class="ident">SystemRunner</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio::pin</span>;
 
@@ -335,7 +334,7 @@
 {
     <span class="ident">tokio::task::spawn_local</span>(<span class="ident">f</span>)
 }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="actix_rt" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>

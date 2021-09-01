@@ -21,8 +21,7 @@
 <span id="21">21</span>
 <span id="22">22</span>
 <span id="23">23</span>
-</pre><pre class="rust">
-<span class="doccomment">//! Codec utilities for working with framed protocols.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Codec utilities for working with framed protocols.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Contains adapters to go from streams of bytes, [`AsyncRead`] and</span>
 <span class="doccomment">//! [`AsyncWrite`], to framed streams implementing [`Sink`] and [`Stream`].</span>
@@ -39,13 +38,13 @@
 <span class="kw">mod</span> <span class="ident">bcodec</span>;
 <span class="kw">mod</span> <span class="ident">framed</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::bcodec::BytesCodec</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::framed</span>::{<span class="ident">Framed</span>, <span class="ident">FramedParts</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::bcodec::BytesCodec</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::framed</span>::{<span class="ident">Framed</span>, <span class="ident">FramedParts</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio::io</span>::{<span class="ident">AsyncRead</span>, <span class="ident">AsyncWrite</span>, <span class="ident">ReadBuf</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio_util::codec</span>::{<span class="ident">Decoder</span>, <span class="ident">Encoder</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio_util::io::poll_read_buf</span>;
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="actix_codec" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>
