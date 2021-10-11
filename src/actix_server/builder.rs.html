@@ -469,6 +469,10 @@
 <span id="469">469</span>
 <span id="470">470</span>
 <span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
     <span class="ident">io</span>, <span class="ident">mem</span>,
@@ -783,23 +787,25 @@
                 <span class="comment">// Handle `SIGINT`, `SIGTERM`, `SIGQUIT` signals and stop actix system</span>
                 <span class="kw">match</span> <span class="ident">sig</span> {
                     <span class="ident">Signal::Int</span> =&gt; {
-                        <span class="macro">info!</span>(<span class="string">&quot;SIGINT received, exiting&quot;</span>);
+                        <span class="macro">info!</span>(<span class="string">&quot;SIGINT received, starting forced shutdown&quot;</span>);
                         <span class="self">self</span>.<span class="ident">exit</span> <span class="op">=</span> <span class="bool-val">true</span>;
                         <span class="self">self</span>.<span class="ident">handle_cmd</span>(<span class="ident">ServerCommand::Stop</span> {
                             <span class="ident">graceful</span>: <span class="bool-val">false</span>,
                             <span class="ident">completion</span>: <span class="prelude-val">None</span>,
                         })
                     }
+
                     <span class="ident">Signal::Term</span> =&gt; {
-                        <span class="macro">info!</span>(<span class="string">&quot;SIGTERM received, stopping&quot;</span>);
+                        <span class="macro">info!</span>(<span class="string">&quot;SIGTERM received, starting graceful shutdown&quot;</span>);
                         <span class="self">self</span>.<span class="ident">exit</span> <span class="op">=</span> <span class="bool-val">true</span>;
                         <span class="self">self</span>.<span class="ident">handle_cmd</span>(<span class="ident">ServerCommand::Stop</span> {
                             <span class="ident">graceful</span>: <span class="bool-val">true</span>,
                             <span class="ident">completion</span>: <span class="prelude-val">None</span>,
                         })
                     }
+
                     <span class="ident">Signal::Quit</span> =&gt; {
-                        <span class="macro">info!</span>(<span class="string">&quot;SIGQUIT received, exiting&quot;</span>);
+                        <span class="macro">info!</span>(<span class="string">&quot;SIGQUIT received, starting forced shutdown&quot;</span>);
                         <span class="self">self</span>.<span class="ident">exit</span> <span class="op">=</span> <span class="bool-val">true</span>;
                         <span class="self">self</span>.<span class="ident">handle_cmd</span>(<span class="ident">ServerCommand::Stop</span> {
                             <span class="ident">graceful</span>: <span class="bool-val">false</span>,
@@ -830,12 +836,14 @@
 
                 <span class="ident">rt::spawn</span>(<span class="kw">async</span> <span class="kw">move</span> {
                     <span class="kw">if</span> <span class="ident">graceful</span> {
+                        <span class="comment">// wait for all workers to shut down</span>
                         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">join_all</span>(<span class="ident">stop</span>).<span class="kw">await</span>;
                     }
 
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tx</span>) <span class="op">=</span> <span class="ident">completion</span> {
                         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">tx</span>.<span class="ident">send</span>(());
                     }
+
                     <span class="kw">for</span> <span class="ident">tx</span> <span class="kw">in</span> <span class="ident">notify</span> {
                         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">tx</span>.<span class="ident">send</span>(());
                     }

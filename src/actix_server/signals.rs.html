@@ -89,33 +89,47 @@
 <span id="89">89</span>
 <span id="90">90</span>
 <span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::future::Future</span>;
 <span class="kw">use</span> <span class="ident">std::pin::Pin</span>;
 <span class="kw">use</span> <span class="ident">std::task</span>::{<span class="ident">Context</span>, <span class="ident">Poll</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::server::Server</span>;
 
-<span class="doccomment">/// Different types of process signals</span>
+<span class="doccomment">/// Types of process signals.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Signal</span> {
-    <span class="doccomment">/// SIGINT</span>
+    <span class="doccomment">/// `SIGINT`</span>
     <span class="ident">Int</span>,
-    <span class="doccomment">/// SIGTERM</span>
+
+    <span class="doccomment">/// `SIGTERM`</span>
     <span class="ident">Term</span>,
-    <span class="doccomment">/// SIGQUIT</span>
+
+    <span class="doccomment">/// `SIGQUIT`</span>
     <span class="ident">Quit</span>,
 }
 
+<span class="doccomment">/// Process signal listener.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Signals</span> {
     <span class="ident">srv</span>: <span class="ident">Server</span>,
+
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">unix</span>))]</span>
     <span class="ident">signals</span>: <span class="ident">futures_core::future::LocalBoxFuture</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>,
+
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
     <span class="ident">signals</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Signal</span>, <span class="ident">actix_rt::signal::unix::Signal</span>)<span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Signals</span> {
+    <span class="doccomment">/// Spawns a signal listening future that is able to send commands to the `Server`.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">start</span>(<span class="ident">srv</span>: <span class="ident">Server</span>) {
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">unix</span>))]</span>
         {
@@ -124,6 +138,7 @@
                 <span class="ident">signals</span>: <span class="ident">Box::pin</span>(<span class="ident">actix_rt::signal::ctrl_c</span>()),
             });
         }
+
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
         {
             <span class="kw">use</span> <span class="ident">actix_rt::signal::unix</span>;
@@ -167,6 +182,7 @@
             }
             <span class="ident">Poll::Pending</span> =&gt; <span class="ident">Poll::Pending</span>,
         }
+
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
         {
             <span class="kw">for</span> (<span class="ident">sig</span>, <span class="ident">fut</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">signals</span>.<span class="ident">iter_mut</span>() {

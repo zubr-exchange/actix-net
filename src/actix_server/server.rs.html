@@ -110,6 +110,13 @@
 <span id="110">110</span>
 <span id="111">111</span>
 <span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::future::Future</span>;
 <span class="kw">use</span> <span class="ident">std::io</span>;
 <span class="kw">use</span> <span class="ident">std::pin::Pin</span>;
@@ -127,8 +134,8 @@
     <span class="ident">Pause</span>(<span class="ident">oneshot::Sender</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
     <span class="ident">Resume</span>(<span class="ident">oneshot::Sender</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
     <span class="ident">Signal</span>(<span class="ident">Signal</span>),
-    <span class="doccomment">/// Whether to try and shut down gracefully</span>
     <span class="ident">Stop</span> {
+        <span class="doccomment">/// True if shut down should be graceful.</span>
         <span class="ident">graceful</span>: <span class="ident">bool</span>,
         <span class="ident">completion</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">oneshot::Sender</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>,
     },
@@ -136,6 +143,13 @@
     <span class="ident">Notify</span>(<span class="ident">oneshot::Sender</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
 }
 
+<span class="doccomment">/// Server handle.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Shutdown Signals</span>
+<span class="doccomment">/// On UNIX systems, `SIGQUIT` will start a graceful shutdown and `SIGTERM` or `SIGINT` will start a</span>
+<span class="doccomment">/// forced shutdown. On Windows, a CTRL-C signal will start a forced shutdown.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A graceful shutdown will wait for all workers to stop first.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Server</span>(
     <span class="ident">UnboundedSender</span><span class="op">&lt;</span><span class="ident">ServerCommand</span><span class="op">&gt;</span>,
