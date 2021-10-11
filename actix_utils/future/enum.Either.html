@@ -7,7 +7,7 @@
     },
 }</code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Combines two different futures that have the same output type.</p>
 <p>Construct variants with <a href="enum.Either.html#method.left" title="Either::left"><code>Either::left</code></a> and <a href="enum.Either.html#method.right" title="Either::right"><code>Either::right</code></a>.</p>
-<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<h2 id="examples" class="section-header"><a href="#examples">Examples</a></h2>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">actix_utils::future</span>::{<span class="ident">ready</span>, <span class="ident">Ready</span>, <span class="ident">Either</span>};
 
 <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Either</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">Ready</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::left</span>(<span class="ident">ready</span>(<span class="number">42</span>));
