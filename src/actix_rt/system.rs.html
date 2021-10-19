@@ -253,6 +253,7 @@
 <span id="253">253</span>
 <span id="254">254</span>
 <span id="255">255</span>
+<span id="256">256</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">cell::RefCell</span>,
     <span class="ident">collections::HashMap</span>,
@@ -410,6 +411,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SystemRunner</span> {
     <span class="ident">rt</span>: <span class="ident">Runtime</span>,
     <span class="ident">stop_rx</span>: <span class="ident">oneshot::Receiver</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
     <span class="ident">system</span>: <span class="ident">System</span>,
 }
 

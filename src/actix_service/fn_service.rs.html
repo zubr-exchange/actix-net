@@ -446,9 +446,9 @@
     <span class="ident">f</span>: <span class="ident">F</span>,
 ) -&gt; <span class="ident">FnServiceNoConfig</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">Cfg</span>, <span class="ident">Srv</span>, <span class="ident">Req</span>, <span class="ident">Fut</span>, <span class="prelude-val">Err</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">Srv</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
     <span class="ident">F</span>: <span class="ident">Fn</span>() -&gt; <span class="ident">Fut</span>,
     <span class="ident">Fut</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Srv</span>, <span class="prelude-val">Err</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">Srv</span>: <span class="ident">Service</span><span class="op">&lt;</span><span class="ident">Req</span><span class="op">&gt;</span>,
 {
     <span class="ident">FnServiceNoConfig::new</span>(<span class="ident">f</span>)
 }

@@ -591,7 +591,7 @@
         <span class="ident">U</span>: <span class="ident">Decoder</span>,
     {
         <span class="kw">loop</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">this</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">project</span>();
+            <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">project</span>();
             <span class="comment">// Repeatedly call `decode` or `decode_eof` as long as it is &quot;readable&quot;. Readable is</span>
             <span class="comment">// defined as not having returned `None`. If the upstream has returned EOF, and the</span>
             <span class="comment">// decoder is no longer readable, it can be assumed that the decoder will never become</span>
@@ -599,7 +599,7 @@
 
             <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags::READABLE</span>) {
                 <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags::EOF</span>) {
-                    <span class="kw">match</span> <span class="ident">this</span>.<span class="ident">codec</span>.<span class="ident">decode_eof</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">read_buf</span>) {
+                    <span class="kw">match</span> <span class="ident">this</span>.<span class="ident">codec</span>.<span class="ident">decode_eof</span>(<span class="ident">this</span>.<span class="ident">read_buf</span>) {
                         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">frame</span>)) =&gt; <span class="kw">return</span> <span class="ident">Poll::Ready</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">frame</span>))),
                         <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="kw">return</span> <span class="ident">Poll::Ready</span>(<span class="prelude-val">None</span>),
                         <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="ident">Poll::Ready</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">e</span>))),
@@ -608,7 +608,7 @@
 
                 <span class="macro">log::trace!</span>(<span class="string">&quot;attempting to decode a frame&quot;</span>);
 
-                <span class="kw">match</span> <span class="ident">this</span>.<span class="ident">codec</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>.<span class="ident">read_buf</span>) {
+                <span class="kw">match</span> <span class="ident">this</span>.<span class="ident">codec</span>.<span class="ident">decode</span>(<span class="ident">this</span>.<span class="ident">read_buf</span>) {
                     <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">frame</span>)) =&gt; {
                         <span class="macro">log::trace!</span>(<span class="string">&quot;frame decoded from buffer&quot;</span>);
                         <span class="kw">return</span> <span class="ident">Poll::Ready</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">frame</span>)));
