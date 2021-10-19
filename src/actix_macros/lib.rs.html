@@ -341,9 +341,9 @@
     <span class="ident">sig</span>.<span class="ident">asyncness</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
     <span class="kw">let</span> <span class="ident">missing_test_attr</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">has_test_attr</span> {
-        <span class="macro">quote!</span>()
+        <span class="macro">quote!</span> {}
     } <span class="kw">else</span> {
-        <span class="macro">quote!</span>(<span class="attribute">#[<span class="ident">test</span>]</span>)
+        <span class="macro">quote!</span> { <span class="attribute">#[<span class="ident">::core::prelude::v1::test</span>]</span> }
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">system</span> <span class="op">=</span> <span class="ident">syn::parse_str</span>::<span class="op">&lt;</span><span class="ident">syn::Path</span><span class="op">&gt;</span>(<span class="string">&quot;::actix_rt::System&quot;</span>).<span class="ident">unwrap</span>();
