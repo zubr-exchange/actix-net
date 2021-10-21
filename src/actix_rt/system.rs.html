@@ -254,6 +254,73 @@
 <span id="254">254</span>
 <span id="255">255</span>
 <span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">cell::RefCell</span>,
     <span class="ident">collections::HashMap</span>,
@@ -267,7 +334,7 @@
 <span class="kw">use</span> <span class="ident">futures_core::ready</span>;
 <span class="kw">use</span> <span class="ident">tokio::sync</span>::{<span class="ident">mpsc</span>, <span class="ident">oneshot</span>};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">arbiter::ArbiterHandle</span>, <span class="ident">runtime::default_tokio_runtime</span>, <span class="ident">Arbiter</span>, <span class="ident">Runtime</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">arbiter::ArbiterHandle</span>, <span class="ident">Arbiter</span>};
 
 <span class="kw">static</span> <span class="ident">SYSTEM_COUNT</span>: <span class="ident">AtomicUsize</span> <span class="op">=</span> <span class="ident">AtomicUsize::new</span>(<span class="number">0</span>);
 
@@ -285,6 +352,7 @@
     <span class="ident">arbiter_handle</span>: <span class="ident">ArbiterHandle</span>,
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">System</span> {
     <span class="doccomment">/// Create a new system.</span>
     <span class="doccomment">///</span>
@@ -293,7 +361,7 @@
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::new_ret_no_self</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">SystemRunner</span> {
         <span class="ident"><span class="self">Self</span>::with_tokio_rt</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="ident">default_tokio_runtime</span>()
+            <span class="ident"><span class="kw">crate</span>::runtime::default_tokio_runtime</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Default Actix (Tokio) runtime could not be created.&quot;</span>)
         })
     }
@@ -309,7 +377,7 @@
         <span class="kw">let</span> (<span class="ident">stop_tx</span>, <span class="ident">stop_rx</span>) <span class="op">=</span> <span class="ident">oneshot::channel</span>();
         <span class="kw">let</span> (<span class="ident">sys_tx</span>, <span class="ident">sys_rx</span>) <span class="op">=</span> <span class="ident">mpsc::unbounded_channel</span>();
 
-        <span class="kw">let</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident">Runtime::from</span>(<span class="ident">runtime_factory</span>());
+        <span class="kw">let</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::runtime::Runtime::from</span>(<span class="ident">runtime_factory</span>());
         <span class="kw">let</span> <span class="ident">sys_arbiter</span> <span class="op">=</span> <span class="ident">rt</span>.<span class="ident">block_on</span>(<span class="kw">async</span> { <span class="ident">Arbiter::in_new_system</span>() });
         <span class="kw">let</span> <span class="ident">system</span> <span class="op">=</span> <span class="ident">System::construct</span>(<span class="ident">sys_tx</span>, <span class="ident">sys_arbiter</span>.<span class="ident">clone</span>());
 
@@ -328,7 +396,32 @@
             <span class="ident">system</span>,
         }
     }
+}
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">System</span> {
+    <span class="doccomment">/// Create a new system.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">/// Panics if underlying Tokio runtime can not be created.</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::new_ret_no_self</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">SystemRunner</span> {
+        <span class="ident">SystemRunner</span>
+    }
+
+    <span class="doccomment">/// Create a new System using the [Tokio Runtime](tokio-runtime) returned from a closure.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [tokio-runtime]: tokio::runtime::Runtime</span>
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_tokio_rt</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw">_</span>: <span class="ident">F</span>) -&gt; <span class="ident">SystemRunner</span>
+    <span class="kw">where</span>
+        <span class="ident">F</span>: <span class="ident">Fn</span>() -&gt; <span class="ident">tokio::runtime::Runtime</span>,
+    {
+        <span class="macro">unimplemented!</span>(<span class="string">&quot;System::with_tokio_rt is not implemented yet&quot;</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">System</span> {
     <span class="doccomment">/// Constructs new system and registers it on the current thread.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">construct</span>(
         <span class="ident">sys_tx</span>: <span class="ident">mpsc::UnboundedSender</span><span class="op">&lt;</span><span class="ident">SystemCommand</span><span class="op">&gt;</span>,
@@ -405,16 +498,18 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>))]</span>
 <span class="doccomment">/// Runner that keeps a [System]&#39;s event loop alive until stop message is received.</span>
 <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;A SystemRunner does nothing unless `run` is called.&quot;</span>]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SystemRunner</span> {
-    <span class="ident">rt</span>: <span class="ident">Runtime</span>,
+    <span class="ident">rt</span>: <span class="ident"><span class="kw">crate</span>::runtime::Runtime</span>,
     <span class="ident">stop_rx</span>: <span class="ident">oneshot::Receiver</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
     <span class="ident">system</span>: <span class="ident">System</span>,
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">SystemRunner</span> {
     <span class="doccomment">/// Starts event loop and will return once [System] is [stopped](System::stop).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="self">self</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -441,6 +536,45 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">block_on</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Future</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fut</span>: <span class="ident">F</span>) -&gt; <span class="ident">F::Output</span> {
         <span class="self">self</span>.<span class="ident">rt</span>.<span class="ident">block_on</span>(<span class="ident">fut</span>)
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>)]</span>
+<span class="doccomment">/// Runner that keeps a [System]&#39;s event loop alive until stop message is received.</span>
+<span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;A SystemRunner does nothing unless `run` is called.&quot;</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SystemRunner</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">SystemRunner</span> {
+    <span class="doccomment">/// Starts event loop and will return once [System] is [stopped](System::stop).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="self">self</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="macro">unimplemented!</span>(<span class="string">&quot;SystemRunner::run is not implemented yet&quot;</span>)
+    }
+
+    <span class="doccomment">/// Runs the provided future, blocking the current thread until the future completes.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">block_on</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Future</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fut</span>: <span class="ident">F</span>) -&gt; <span class="ident">F::Output</span> {
+        <span class="ident">tokio_uring::start</span>(<span class="kw">async</span> <span class="kw">move</span> {
+            <span class="kw">let</span> (<span class="ident">stop_tx</span>, <span class="ident">stop_rx</span>) <span class="op">=</span> <span class="ident">oneshot::channel</span>();
+            <span class="kw">let</span> (<span class="ident">sys_tx</span>, <span class="ident">sys_rx</span>) <span class="op">=</span> <span class="ident">mpsc::unbounded_channel</span>();
+
+            <span class="kw">let</span> <span class="ident">sys_arbiter</span> <span class="op">=</span> <span class="ident">Arbiter::in_new_system</span>();
+            <span class="kw">let</span> <span class="ident">system</span> <span class="op">=</span> <span class="ident">System::construct</span>(<span class="ident">sys_tx</span>, <span class="ident">sys_arbiter</span>.<span class="ident">clone</span>());
+
+            <span class="ident">system</span>
+                .<span class="ident">tx</span>()
+                .<span class="ident">send</span>(<span class="ident">SystemCommand::RegisterArbiter</span>(<span class="ident">usize::MAX</span>, <span class="ident">sys_arbiter</span>))
+                .<span class="ident">unwrap</span>();
+
+            <span class="comment">// init background system arbiter</span>
+            <span class="kw">let</span> <span class="ident">sys_ctrl</span> <span class="op">=</span> <span class="ident">SystemController::new</span>(<span class="ident">sys_rx</span>, <span class="ident">stop_tx</span>);
+            <span class="ident">tokio_uring::spawn</span>(<span class="ident">sys_ctrl</span>);
+
+            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">fut</span>.<span class="kw">await</span>;
+            <span class="ident">drop</span>(<span class="ident">stop_rx</span>);
+            <span class="ident">res</span>
+        })
     }
 }
 
