@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["new","Start server building process"]],"struct":[["Server","Server handle."],["ServerBuilder","Server builder"],["TestServer","A testing server."]],"trait":[["ServiceFactory",""]]});
+initSidebarItems({"fn":[["new","Start server building process"]],"struct":[["Server",""],["ServerBuilder","Server builder"],["ServerHandle","Server handle."],["TestServer","A testing server."]],"trait":[["ServiceFactory",""]]});
