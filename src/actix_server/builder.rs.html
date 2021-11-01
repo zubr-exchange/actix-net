@@ -480,8 +480,6 @@
 <span id="480">480</span>
 <span id="481">481</span>
 <span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
     <span class="ident">io</span>, <span class="ident">mem</span>,
@@ -930,29 +928,27 @@
     <span class="ident">backlog</span>: <span class="ident">u32</span>,
 ) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MioTcpListener</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">succ</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">success</span> <span class="op">=</span> <span class="bool-val">false</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sockets</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">for</span> <span class="ident">addr</span> <span class="kw">in</span> <span class="ident">addr</span>.<span class="ident">to_socket_addrs</span>()<span class="question-mark">?</span> {
         <span class="kw">match</span> <span class="ident">create_tcp_listener</span>(<span class="ident">addr</span>, <span class="ident">backlog</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">lst</span>) =&gt; {
-                <span class="ident">succ</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                <span class="ident">success</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 <span class="ident">sockets</span>.<span class="ident">push</span>(<span class="ident">lst</span>);
             }
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="ident">err</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>),
         }
     }
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">succ</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">err</span>.<span class="ident">take</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">io::Error::new</span>(
-                <span class="ident">io::ErrorKind::Other</span>,
-                <span class="string">&quot;Can not bind to address.&quot;</span>,
-            ))
-        }
-    } <span class="kw">else</span> {
+    <span class="kw">if</span> <span class="ident">success</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">sockets</span>)
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">err</span>.<span class="ident">take</span>() {
+        <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+    } <span class="kw">else</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">io::Error::new</span>(
+            <span class="ident">io::ErrorKind::Other</span>,
+            <span class="string">&quot;Can not bind to address.&quot;</span>,
+        ))
     }
 }
 
