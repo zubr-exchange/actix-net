@@ -21,6 +21,8 @@
 <span id="21">21</span>
 <span id="22">22</span>
 <span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Codec utilities for working with framed protocols.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Contains adapters to go from streams of bytes, [`AsyncRead`] and</span>
@@ -37,9 +39,11 @@
 
 <span class="kw">mod</span> <span class="ident">bcodec</span>;
 <span class="kw">mod</span> <span class="ident">framed</span>;
+<span class="kw">mod</span> <span class="ident">lines</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::bcodec::BytesCodec</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::framed</span>::{<span class="ident">Framed</span>, <span class="ident">FramedParts</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::lines::LinesCodec</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio::io</span>::{<span class="ident">AsyncRead</span>, <span class="ident">AsyncWrite</span>, <span class="ident">ReadBuf</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tokio_util::codec</span>::{<span class="ident">Decoder</span>, <span class="ident">Encoder</span>};

@@ -1,5 +1,5 @@
 var N = null;var sourcesIndex = {};
-sourcesIndex["actix_codec"] = {"name":"","files":["bcodec.rs","framed.rs","lib.rs"]};
+sourcesIndex["actix_codec"] = {"name":"","files":["bcodec.rs","framed.rs","lib.rs","lines.rs"]};
 sourcesIndex["actix_macros"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["actix_rt"] = {"name":"","files":["arbiter.rs","lib.rs","runtime.rs","system.rs"]};
 sourcesIndex["actix_server"] = {"name":"","files":["accept.rs","availability.rs","builder.rs","handle.rs","join_all.rs","lib.rs","server.rs","service.rs","signals.rs","socket.rs","test_server.rs","waker_queue.rs","worker.rs"]};

@@ -30,15 +30,13 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
-<span id="33">33</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>, <span class="ident">BytesMut</span>};
-<span class="kw">use</span> <span class="ident">std::io</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io</span>;
+
+<span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>, <span class="ident">BytesMut</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Decoder</span>, <span class="ident">Encoder</span>};
 
-<span class="doccomment">/// Bytes codec.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Reads/Writes chunks of bytes from a stream.</span>
+<span class="doccomment">/// Bytes codec. Reads/writes chunks of bytes from a stream.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BytesCodec</span>;
 
