@@ -611,6 +611,12 @@
 <span id="611">611</span>
 <span id="612">612</span>
 <span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
     <span class="ident">io</span>, <span class="ident">mem</span>,
@@ -896,15 +902,6 @@
         <span class="kw">let</span> <span class="ident">counter</span> <span class="op">=</span> <span class="ident">Counter::new</span>(<span class="ident">config</span>.<span class="ident">max_concurrent_connections</span>);
 
         <span class="kw">let</span> <span class="ident">counter_clone</span> <span class="op">=</span> <span class="ident">counter</span>.<span class="ident">clone</span>();
-        <span class="comment">// every worker runs in it&#39;s own arbiter.</span>
-        <span class="comment">// use a custom tokio runtime builder to change the settings of runtime.</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>))]</span>
-        <span class="kw">let</span> <span class="ident">arbiter</span> <span class="op">=</span> {
-            <span class="comment">// TODO: pass max blocking thread config when tokio-uring enable configuration</span>
-            <span class="comment">// on building runtime.</span>
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">max_blocking_threads</span>;
-            <span class="ident">Arbiter::new</span>()
-        };
 
         <span class="comment">// get actix system context if it is set</span>
         <span class="kw">let</span> <span class="ident">sys</span> <span class="op">=</span> <span class="ident">System::try_current</span>();
@@ -912,6 +909,8 @@
         <span class="comment">// service factories initialization channel</span>
         <span class="kw">let</span> (<span class="ident">factory_tx</span>, <span class="ident">factory_rx</span>) <span class="op">=</span> <span class="ident">std::sync::mpsc::sync_channel</span>(<span class="number">1</span>);
 
+        <span class="comment">// every worker runs in it&#39;s own thread and tokio runtime.</span>
+        <span class="comment">// use a custom tokio runtime builder to change the settings of runtime.</span>
         <span class="ident">std::thread::Builder::new</span>()
             .<span class="ident">name</span>(<span class="macro">format!</span>(<span class="string">&quot;actix-server worker {}&quot;</span>, <span class="ident">idx</span>))
             .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
@@ -920,13 +919,7 @@
                     <span class="ident">System::set_current</span>(<span class="ident">sys</span>);
                 }
 
-                <span class="kw">let</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident">tokio::runtime::Builder::new_current_thread</span>()
-                    .<span class="ident">enable_all</span>()
-                    .<span class="ident">max_blocking_threads</span>(<span class="ident">config</span>.<span class="ident">max_blocking_threads</span>)
-                    .<span class="ident">build</span>()
-                    .<span class="ident">unwrap</span>();
-
-                <span class="ident">rt</span>.<span class="ident">block_on</span>(<span class="ident">tokio::task::LocalSet::new</span>().<span class="ident">run_until</span>(<span class="kw">async</span> <span class="kw">move</span> {
+                <span class="kw">let</span> <span class="ident">worker_fut</span> <span class="op">=</span> <span class="kw">async</span> <span class="kw">move</span> {
                     <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="ident">factories</span>
                         .<span class="ident">iter</span>()
                         .<span class="ident">enumerate</span>()
@@ -981,7 +974,26 @@
                     })
                     .<span class="kw">await</span>
                     .<span class="ident">expect</span>(<span class="string">&quot;task 2 panic&quot;</span>);
-                }))
+                };
+
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>))]</span>
+                {
+                    <span class="comment">// TODO: pass max blocking thread config when tokio-uring enable configuration</span>
+                    <span class="comment">// on building runtime.</span>
+                    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">max_blocking_threads</span>;
+                    <span class="ident">tokio_uring::start</span>(<span class="ident">worker_fut</span>)
+                }
+
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;io-uring&quot;</span>)))]</span>
+                {
+                    <span class="kw">let</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident">tokio::runtime::Builder::new_current_thread</span>()
+                        .<span class="ident">enable_all</span>()
+                        .<span class="ident">max_blocking_threads</span>(<span class="ident">config</span>.<span class="ident">max_blocking_threads</span>)
+                        .<span class="ident">build</span>()
+                        .<span class="ident">unwrap</span>();
+
+                    <span class="ident">rt</span>.<span class="ident">block_on</span>(<span class="ident">tokio::task::LocalSet::new</span>().<span class="ident">run_until</span>(<span class="ident">worker_fut</span>))
+                }
             })
             .<span class="ident">expect</span>(<span class="string">&quot;worker thread error/panic&quot;</span>);
 
