@@ -603,6 +603,14 @@
 <span id="603">603</span>
 <span id="604">604</span>
 <span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">future::Future</span>,
     <span class="ident">io</span>, <span class="ident">mem</span>,
@@ -1157,6 +1165,14 @@
                 <span class="self">self</span>.<span class="ident">poll</span>(<span class="ident">cx</span>)
             }
             <span class="ident">WorkerState::Shutdown</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">shutdown</span>) =&gt; {
+                <span class="comment">// drop all pending connections in rx channel.</span>
+                <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Poll::Ready</span>(<span class="prelude-val">Some</span>(<span class="ident">conn</span>)) <span class="op">=</span> <span class="ident">Pin::new</span>(<span class="kw-2">&amp;mut</span> <span class="ident">this</span>.<span class="ident">rx</span>).<span class="ident">poll_recv</span>(<span class="ident">cx</span>) {
+                    <span class="comment">// WorkerCounterGuard is needed as Accept thread has incremented counter.</span>
+                    <span class="comment">// It&#39;s guard&#39;s job to decrement the counter together with drop of Conn.</span>
+                    <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">counter</span>.<span class="ident">guard</span>();
+                    <span class="ident">drop</span>((<span class="ident">conn</span>, <span class="ident">guard</span>));
+                }
+
                 <span class="comment">// wait for 1 second</span>
                 <span class="macro">ready!</span>(<span class="ident">shutdown</span>.<span class="ident">timer</span>.<span class="ident">as_mut</span>().<span class="ident">poll</span>(<span class="ident">cx</span>));
 
